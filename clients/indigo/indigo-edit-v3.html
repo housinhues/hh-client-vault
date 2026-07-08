@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Indigo Edit — Housing Hues Studio</title>
+<script src="https://apis.google.com/js/api.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #080808;
+  --void-2: #0e0e0e;
+  --void-3: #141414;
+  --void-4: #1a1a1a;
+  --ink: #f0ede7;
+  --ink-2: #b8b4ae;
+  --ink-3: #6a6660;
+  --ink-4: #3a3834;
+  --gold: #c4a35a;
+  --gold-2: #dfc07a;
+  --gold-dim: rgba(196,163,90,0.1);
+  --gold-glow: rgba(196,163,90,0.18);
+  --border: rgba(255,255,255,0.055);
+  --border-mid: rgba(255,255,255,0.1);
+  --border-gold: rgba(196,163,90,0.3);
+  --wedding: #d4a5b5;
+  --matric: #85c4a0;
+  --corporate: #8aafd4;
+  --events: #c4956a;
+  --portrait: #b09fd4;
+  --success: #6bb86b;
+  --danger: #c0604a;
+  --r: 4px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--void);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+header {
+  padding: 2.2rem 3rem 1.8rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  position: relative;
+}
+header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 3rem; right: 3rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.4;
+}
+.logo-block { display: flex; flex-direction: column; gap: 5px; }
+.logo-block h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2.6rem;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  line-height: 1;
+  text-transform: uppercase;
+}
+.logo-block h1 em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--gold);
+}
+.logo-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.engine-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1.2rem;
+  border-radius: 2px;
+}
+.pulse {
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--gold);
+  animation: breathe 2.4s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%,100% { opacity: 1; box-shadow: 0 0 6px var(--gold); }
+  50% { opacity: 0.4; box-shadow: 0 0 2px var(--gold); }
+}
+
+/* ── MAIN ── */
+main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 3rem 3rem 6rem;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* ── SIDEBAR ── */
+.sidebar { display: flex; flex-direction: column; gap: 2rem; }
+
+.section-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.9rem;
+}
+
+/* PRESETS */
+.preset-list { display: flex; flex-direction: column; gap: 8px; }
+.preset-item {
+  background: var(--void-2);
+  border: 1px solid var(--border);
+  padding: 0.9rem 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.preset-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.preset-item.wedding::before   { background: var(--wedding); }
+.preset-item.matric::before    { background: var(--matric); }
+.preset-item.corporate::before { background: var(--corporate); }
+.preset-item.events::before    { background: var(--events); }
+.preset-item.portrait::before  { background: var(--portrait); }
+.preset-item:hover { border-color: var(--border-mid); background: var(--void-3); }
+.preset-item.active { border-color: var(--border-gold); background: var(--gold-dim); }
+.preset-item.active::before { opacity: 1; }
+.preset-top { display: flex; justify-content: space-between; align-items: center; }
+.preset-name { font-size: 0.85rem; font-weight: 500; color: var(--ink); }
+.preset-dot { width: 8px; height: 8px; border-radius: 50%; opacity: 0.7; }
+.preset-item.wedding   .preset-dot { background: var(--wedding); }
+.preset-item.matric    .preset-dot { background: var(--matric); }
+.preset-item.corporate .preset-dot { background: var(--corporate); }
+.preset-item.events    .preset-dot { background: var(--events); }
+.preset-item.portrait  .preset-dot { background: var(--portrait); }
+.preset-desc { font-size: 0.7rem; color: var(--ink-3); margin-top: 3px; line-height: 1.3; }
+.preset-tags { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
+.ptag {
+  font-size: 0.58rem;
+  font-family: 'DM Mono', monospace;
+  padding: 2px 7px;
+  border: 1px solid var(--border);
+  color: var(--ink-3);
+  letter-spacing: 0.05em;
+}
+
+/* CONTROLS */
+.controls-panel { display: flex; flex-direction: column; gap: 14px; }
+.ctrl-row { display: flex; flex-direction: column; gap: 5px; }
+.ctrl-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.ctrl-val { color: var(--gold); }
+input[type=range] {
+  width: 100%;
+  height: 1px;
+  -webkit-appearance: none;
+  background: var(--void-4);
+  border-radius: 1px;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  background: var(--gold);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 6px var(--gold-glow);
+}
+
+/* ── WORKSPACE ── */
+.workspace { display: flex; flex-direction: column; gap: 2rem; }
+
+/* UPLOAD ZONE */
+.upload-zone {
+  border: 1px dashed var(--border-mid);
+  padding: 3.5rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--void-2);
+  position: relative;
+  overflow: hidden;
+}
+.upload-zone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, var(--gold-dim) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.upload-zone:hover, .upload-zone.dragover { border-color: var(--border-gold); }
+.upload-zone:hover::before, .upload-zone.dragover::before { opacity: 1; }
+.upload-zone.has-files { border-style: solid; border-color: var(--border); padding: 1rem; }
+.upload-ico {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.4rem;
+  font-weight: 300;
+  color: var(--gold);
+  opacity: 0.5;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+.upload-zone h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: var(--ink-2);
+  margin-bottom: 0.4rem;
+}
+.upload-zone p {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+/* IMAGE GRID */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+.img-card {
+  background: var(--void-3);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 4/3;
+}
+.img-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.img-card .img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 6px 8px;
+}
+.img-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  color: rgba(255,255,255,0.7);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.status-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.52rem;
+  padding: 1px 6px;
+  border-radius: 1px;
+  display: inline-block;
+  margin-top: 2px;
+  letter-spacing: 0.05em;
+}
+.status-badge.pending    { background: rgba(255,255,255,0.08); color: #888; }
+.status-badge.processing { background: rgba(196,163,90,0.2); color: var(--gold); }
+.status-badge.done       { background: rgba(107,184,107,0.2); color: var(--success); }
+.status-badge.error      { background: rgba(192,96,74,0.2); color: #e07a5f; }
+.img-remove {
+  position: absolute;
+  top: 6px; right: 6px;
+  background: rgba(0,0,0,0.75);
+  border: none; color: rgba(255,255,255,0.7);
+  width: 20px; height: 20px;
+  cursor: pointer;
+  font-size: 11px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.img-card:hover .img-remove { opacity: 1; }
+
+/* PROGRESS */
+.progress-wrap {
+  background: var(--void-2);
+  border: 1px solid var(--border);
+  padding: 1rem 1.4rem;
+  display: none;
+}
+.progress-wrap.show { display: block; }
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--ink-3);
+  margin-bottom: 10px;
+  letter-spacing: 0.08em;
+}
+.progress-track { height: 1px; background: var(--void-4); }
+.progress-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.3s; }
+
+/* ACTION BAR */
+.action-bar { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-main {
+  background: var(--gold);
+  color: var(--void);
+  border: none;
+  padding: 0.75rem 2.2rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+.btn-main:hover { background: var(--gold-2); }
+.btn-main:disabled { opacity: 0.3; cursor: not-allowed; }
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--ink-3);
+  padding: 0.75rem 1.6rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: var(--border-gold); color: var(--gold); }
+.btn-drive {
+  background: transparent;
+  border: 1px solid rgba(196,163,90,0.35);
+  color: var(--gold);
+  padding: 0.75rem 1.6rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.btn-drive:hover { background: var(--gold-dim); }
+.btn-drive svg { width: 14px; height: 14px; flex-shrink: 0; }
+.drive-status {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  padding: 4px 0;
+  display: none;
+}
+.drive-status.show { display: block; }
+.drive-status.ok { color: var(--success); }
+.drive-status.err { color: #c07060; }
+
+/* RESULTS */
+.results-section { display: none; }
+.results-section.show { display: block; }
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+.results-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink-2);
+  letter-spacing: 0.05em;
+}
+.approved-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+}
+
+.result-card {
+  background: var(--void-2);
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.result-card.is-approved { border-color: rgba(107,184,107,0.3); }
+.result-preview { display: flex; flex: 3; min-width: 280px; }
+.result-before, .result-after { flex: 1; position: relative; }
+.result-before img, .result-after img { width: 100%; height: 160px; object-fit: cover; display: block; }
+.result-label-badge {
+  position: absolute; bottom: 6px; left: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  background: rgba(0,0,0,0.8);
+  padding: 2px 8px;
+}
+.result-divider { width: 1px; background: var(--border); }
+.result-meta {
+  flex: 1.2; min-width: 190px;
+  padding: 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-left: 1px solid var(--border);
+}
+.result-filename {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 4px;
+}
+.result-ops {
+  font-size: 0.65rem;
+  color: var(--ink-3);
+  line-height: 1.5;
+  font-family: 'DM Mono', monospace;
+}
+.result-actions { display: flex; gap: 8px; margin-top: 12px; }
+.btn-approve, .btn-skip {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+}
+.btn-approve { background: rgba(107,184,107,0.12); color: #8bc48b; border: 1px solid rgba(107,184,107,0.25); }
+.btn-approve:hover, .btn-approve.on { background: rgba(107,184,107,0.3); }
+.btn-skip { background: rgba(192,96,74,0.1); color: #c09090; border: 1px solid rgba(192,96,74,0.2); }
+.btn-skip:hover { background: rgba(192,96,74,0.25); }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1.4rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+footer span { color: var(--gold); opacity: 0.6; }
+
+@media (max-width: 900px) {
+  main { grid-template-columns: 1fr; padding: 2rem 1.5rem 4rem; }
+  header { padding: 1.5rem; }
+  footer { padding: 1.2rem 1.5rem; }
+}
+@media (max-width: 600px) {
+  .result-preview { flex-direction: column; }
+  .result-meta { border-left: none; border-top: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-block">
+    <h1>Indigo <em>Edit</em></h1>
+    <div class="logo-sub">Housing Hues Studio · Batch Colour Engine · v3</div>
+  </div>
+  <div class="engine-pill">
+    <div class="pulse"></div>
+    Colour Engine Ready
+  </div>
+</header>
+
+<main>
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+
+    <div>
+      <div class="section-eyebrow">Shoot Style</div>
+      <div class="preset-list" id="presetList">
+
+        <div class="preset-item wedding active" data-preset="wedding">
+          <div class="preset-top"><span class="preset-name">Wedding & Romance</span><div class="preset-dot"></div></div>
+          <div class="preset-desc">Soft warmth, lifted shadows, silk skin tones</div>
+          <div class="preset-tags"><span class="ptag">warm grade</span><span class="ptag">skin-safe</span><span class="ptag">lifted blacks</span></div>
+        </div>
+
+        <div class="preset-item matric" data-preset="matric">
+          <div class="preset-top"><span class="preset-name">Matric & Prom</span><div class="preset-dot"></div></div>
+          <div class="preset-desc">Vibrant punch, bold contrast, high energy</div>
+          <div class="preset-tags"><span class="ptag">vibrance+</span><span class="ptag">deep contrast</span><span class="ptag">pop</span></div>
+        </div>
+
+        <div class="preset-item corporate" data-preset="corporate">
+          <div class="preset-top"><span class="preset-name">Corporate & School</span><div class="preset-dot"></div></div>
+          <div class="preset-desc">Clean neutral, sharp detail, consistent output</div>
+          <div class="preset-tags"><span class="ptag">neutral</span><span class="ptag">precise</span><span class="ptag">consistent</span></div>
+        </div>
+
+        <div class="preset-item events" data-preset="events">
+          <div class="preset-top"><span class="preset-name">Events & Lifestyle</span><div class="preset-dot"></div></div>
+          <div class="preset-desc">Cinematic mood, deep shadows, moody atmosphere</div>
+          <div class="preset-tags"><span class="ptag">cinematic</span><span class="ptag">moody</span><span class="ptag">shadow depth</span></div>
+        </div>
+
+        <div class="preset-item portrait" data-preset="portrait">
+          <div class="preset-top"><span class="preset-name">Portrait & Studio</span><div class="preset-dot"></div></div>
+          <div class="preset-desc">Clean exposure, refined skin, editorial finish</div>
+          <div class="preset-tags"><span class="ptag">editorial</span><span class="ptag">refined</span><span class="ptag">balanced</span></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div>
+      <div class="section-eyebrow">Fine Control</div>
+      <div class="controls-panel">
+        <div class="ctrl-row">
+          <div class="ctrl-label"><span>Intensity</span><span class="ctrl-val" id="intensityVal">100%</span></div>
+          <input type="range" min="0.3" max="1.8" step="0.05" value="1.0" id="intensitySlider">
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-label"><span>Output Quality</span><span class="ctrl-val" id="qualityVal">92%</span></div>
+          <input type="range" min="70" max="100" value="92" id="qualitySlider">
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ── WORKSPACE ── -->
+  <div class="workspace">
+
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" accept="image/jpeg,image/png,image/webp" multiple id="fileInput" style="display:none">
+      <span class="upload-ico">✦</span>
+      <h3>Drop images to begin</h3>
+      <p>JPG · PNG · WEBP · up to 30 images</p>
+      <div class="image-grid" id="imageGrid" style="text-align:left"></div>
+    </div>
+
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-top">
+        <span id="progressLabel">Waiting</span>
+        <span id="progressCount">0 / 0</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn-main" id="processBtn" disabled>Process Batch</button>
+      <button class="btn-drive" id="driveBtn" onclick="openDrivePicker()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 15l4.5-8h9L21 15M3 15l3 5h12l3-5M3 15h18"/></svg>
+        Import from Drive
+      </button>
+      <button class="btn-ghost" id="clearBtn">Clear All</button>
+      <button class="btn-ghost" id="downloadBtn" style="display:none">Download ZIP</button>
+    </div>
+    <div class="drive-status" id="driveStatus"></div>
+
+    <div class="results-section" id="resultsSection">
+      <div class="results-header">
+        <div class="results-title">Review finals</div>
+        <div class="approved-count" id="approvedCount">0 approved</div>
+      </div>
+      <div id="resultsList"></div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <p>Indigo Cousin Photography · <span>Housing Hues Agency</span></p>
+  <p>Powered by Indigo Colour Engine · Studio Edition</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+// ── STATE ──
+let uploadedFiles = [];
+let processedResults = [];
+let currentPreset = 'wedding';
+
+// ── PRESET PARAMS ──
+const PRESETS = {
+  wedding:   { exposure:8,  contrast:5,  warmth:14, saturation:4,  shadows:10, highlights:-4, vibrance:5,  clarity:2  },
+  matric:    { exposure:4,  contrast:18, warmth:4,  saturation:18, shadows:4,  highlights:-7, vibrance:13, clarity:6  },
+  corporate: { exposure:3,  contrast:9,  warmth:0,  saturation:1,  shadows:4,  highlights:-2, vibrance:1,  clarity:4  },
+  events:    { exposure:-1, contrast:20, warmth:-3, saturation:8,  shadows:-5, highlights:-10,vibrance:6,  clarity:8  },
+  portrait:  { exposure:5,  contrast:7,  warmth:6,  saturation:3,  shadows:8,  highlights:-5, vibrance:3,  clarity:5  }
+};
+
+function getParams() {
+  const intensity = parseFloat(document.getElementById('intensitySlider').value);
+  const base = PRESETS[currentPreset] || PRESETS.wedding;
+  const result = {};
+  for (let key in base) {
+    result[key] = base[key] * intensity;
+  }
+  return result;
+}
+
+// ── CANVAS ENGINE ──
+function applyEdits(src, params, mimeType, quality) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const d = imageData.data;
+
+      const expF     = (params.exposure || 0) / 100;
+      const contF    = (params.contrast || 0) / 100;
+      const warmF    = (params.warmth || 0) / 180;
+      const satF     = 1 + ((params.saturation || 0) / 100);
+      const shadowF  = (params.shadows || 0) / 180;
+      const highF    = (params.highlights || 0) / 200;
+      const vibF     = (params.vibrance || 0) / 100;
+      const clarF    = (params.clarity || 0) / 300;
+
+      for (let i = 0; i < d.length; i += 4) {
+        let r = d[i] / 255;
+        let g = d[i+1] / 255;
+        let b = d[i+2] / 255;
+
+        // Exposure
+        r += expF * 0.35; g += expF * 0.35; b += expF * 0.35;
+
+        // Contrast (S-curve style)
+        r = (r - 0.5) * (1 + contF) + 0.5;
+        g = (g - 0.5) * (1 + contF) + 0.5;
+        b = (b - 0.5) * (1 + contF) + 0.5;
+
+        // Shadows & Highlights (luminance-adaptive)
+        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+        if (lum < 0.5) {
+          const boost = shadowF * (0.5 - lum) * 1.4;
+          r += boost; g += boost; b += boost;
+        } else {
+          const darken = highF * (lum - 0.5) * 1.4;
+          r -= darken; g -= darken; b -= darken;
+        }
+
+        // Warmth
+        r += warmF * 0.14;
+        b -= warmF * 0.1;
+        if (warmF > 0) g += warmF * 0.02;
+
+        // Vibrance (boost less-saturated pixels)
+        const maxC = Math.max(r, g, b);
+        const minC = Math.min(r, g, b);
+        const sat = maxC - minC;
+        const vibBoost = vibF * (1 - sat) * 0.75;
+        if (vibBoost > 0) {
+          r += (maxC - r) * vibBoost;
+          g += (maxC - g) * vibBoost;
+          b += (maxC - b) * vibBoost;
+        }
+
+        // Saturation
+        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+        r = gray + (r - gray) * satF;
+        g = gray + (g - gray) * satF;
+        b = gray + (b - gray) * satF;
+
+        // Clarity (local contrast — simplified unsharp approximation)
+        if (clarF > 0) {
+          const lumAfter = 0.299 * r + 0.587 * g + 0.114 * b;
+          const edge = (lumAfter - 0.5) * clarF;
+          r += edge; g += edge; b += edge;
+        }
+
+        d[i]   = Math.min(255, Math.max(0, r * 255));
+        d[i+1] = Math.min(255, Math.max(0, g * 255));
+        d[i+2] = Math.min(255, Math.max(0, b * 255));
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+      const outType = mimeType === 'image/png' ? 'image/png' : 'image/jpeg';
+      resolve(canvas.toDataURL(outType, quality / 100));
+    };
+    img.src = src;
+  });
+}
+
+// ── RENDER UPLOADED CARD ──
+function renderCard(file, src) {
+  const safeId = 'c_' + file.name.replace(/[^a-z0-9]/gi, '_');
+  if (document.getElementById(safeId)) return;
+  const card = document.createElement('div');
+  card.className = 'img-card';
+  card.id = safeId;
+  card.innerHTML = `
+    <img src="${src}" alt="${file.name}">
+    <div class="img-overlay">
+      <div class="img-name">${file.name}</div>
+      <span class="status-badge pending" id="b_${safeId}">pending</span>
+    </div>
+    <button class="img-remove" data-name="${file.name}">✕</button>
+  `;
+  card.querySelector('.img-remove').onclick = (e) => { e.stopPropagation(); removeFile(file.name); };
+  document.getElementById('imageGrid').appendChild(card);
+}
+
+function removeFile(name) {
+  const idx = uploadedFiles.findIndex(f => f.name === name);
+  if (idx !== -1) uploadedFiles.splice(idx, 1);
+  const safeId = 'c_' + name.replace(/[^a-z0-9]/gi, '_');
+  document.getElementById(safeId)?.remove();
+  document.getElementById('processBtn').disabled = uploadedFiles.length === 0;
+  if (uploadedFiles.length === 0) {
+    document.getElementById('resultsSection').classList.remove('show');
+    document.getElementById('downloadBtn').style.display = 'none';
+    processedResults = [];
+    document.getElementById('resultsList').innerHTML = '';
+    document.getElementById('uploadZone').classList.remove('has-files');
+  }
+}
+
+function clearAll() {
+  uploadedFiles = []; processedResults = [];
+  document.getElementById('imageGrid').innerHTML = '';
+  document.getElementById('resultsList').innerHTML = '';
+  document.getElementById('resultsSection').classList.remove('show');
+  document.getElementById('progressWrap').classList.remove('show');
+  document.getElementById('processBtn').disabled = true;
+  document.getElementById('downloadBtn').style.display = 'none';
+  document.getElementById('uploadZone').classList.remove('has-files');
+  document.getElementById('approvedCount').textContent = '0 approved';
+}
+
+// ── BATCH PROCESS ──
+async function processBatch() {
+  if (!uploadedFiles.length) return;
+  processedResults = [];
+  document.getElementById('resultsList').innerHTML = '';
+  document.getElementById('resultsSection').classList.remove('show');
+  document.getElementById('downloadBtn').style.display = 'none';
+  document.getElementById('progressWrap').classList.add('show');
+  document.getElementById('processBtn').disabled = true;
+
+  const params = getParams();
+  const quality = parseInt(document.getElementById('qualitySlider').value);
+  const total = uploadedFiles.length;
+  const presetLabel = currentPreset.charAt(0).toUpperCase() + currentPreset.slice(1);
+
+  for (let i = 0; i < total; i++) {
+    const file = uploadedFiles[i];
+    const safeId = 'c_' + file.name.replace(/[^a-z0-9]/gi, '_');
+    const badge = document.getElementById('b_' + safeId);
+    if (badge) { badge.textContent = 'processing'; badge.className = 'status-badge processing'; }
+    document.getElementById('progressLabel').textContent = file.name;
+    document.getElementById('progressCount').textContent = `${i} / ${total}`;
+    document.getElementById('progressFill').style.width = `${(i / total) * 100}%`;
+
+    try {
+      const originalSrc = await readFile(file);
+      const editedSrc = await applyEdits(originalSrc, params, file.type, quality);
+      processedResults.push({ file, originalSrc, editedSrc, approved: false, description: `${presetLabel} · Intensity ${Math.round(parseFloat(document.getElementById('intensitySlider').value)*100)}% · Q${quality}` });
+      if (badge) { badge.textContent = 'done'; badge.className = 'status-badge done'; }
+    } catch (err) {
+      console.error(err);
+      if (badge) { badge.textContent = 'error'; badge.className = 'status-badge error'; }
+    }
+  }
+
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressLabel').textContent = 'Complete';
+  document.getElementById('progressCount').textContent = `${total} / ${total}`;
+  renderResults();
+  document.getElementById('resultsSection').classList.add('show');
+  document.getElementById('downloadBtn').style.display = 'inline-block';
+  document.getElementById('processBtn').disabled = false;
+}
+
+function readFile(file) {
+  return new Promise(resolve => {
+    const r = new FileReader();
+    r.onload = e => resolve(e.target.result);
+    r.readAsDataURL(file);
+  });
+}
+
+// ── RENDER RESULTS ──
+function renderResults() {
+  const list = document.getElementById('resultsList');
+  list.innerHTML = '';
+  processedResults.forEach((res, idx) => {
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.id = `rc_${idx}`;
+    card.innerHTML = `
+      <div class="result-preview">
+        <div class="result-before"><img src="${res.originalSrc}" alt="before"><span class="result-label-badge">Before</span></div>
+        <div class="result-divider"></div>
+        <div class="result-after"><img src="${res.editedSrc}" alt="after"><span class="result-label-badge" style="color:var(--gold)">After</span></div>
+      </div>
+      <div class="result-meta">
+        <div>
+          <div class="result-filename">${res.file.name}</div>
+          <div class="result-ops">${res.description}</div>
+        </div>
+        <div class="result-actions">
+          <button class="btn-approve" id="ap_${idx}">Approve</button>
+          <button class="btn-skip" id="sk_${idx}">Skip</button>
+        </div>
+      </div>
+    `;
+    list.appendChild(card);
+    document.getElementById(`ap_${idx}`).onclick = () => toggleApprove(idx);
+    document.getElementById(`sk_${idx}`).onclick = () => { processedResults[idx].approved = false; refreshCard(idx); };
+  });
+  updateApprovedCount();
+}
+
+function toggleApprove(idx) {
+  processedResults[idx].approved = !processedResults[idx].approved;
+  refreshCard(idx);
+  updateApprovedCount();
+}
+function refreshCard(idx) {
+  const btn = document.getElementById(`ap_${idx}`);
+  const card = document.getElementById(`rc_${idx}`);
+  if (!btn || !card) return;
+  const approved = processedResults[idx].approved;
+  btn.textContent = approved ? '✓ Approved' : 'Approve';
+  btn.classList.toggle('on', approved);
+  card.classList.toggle('is-approved', approved);
+  card.style.opacity = processedResults[idx].approved === false && document.getElementById(`sk_${idx}`).classList.contains('clicked') ? '0.45' : '1';
+}
+function updateApprovedCount() {
+  const n = processedResults.filter(r => r.approved).length;
+  document.getElementById('approvedCount').textContent = `${n} approved`;
+}
+
+// ── ZIP DOWNLOAD ──
+async function downloadZIP() {
+  const approved = processedResults.filter(r => r.approved);
+  if (!approved.length) {
+    alert('Approve at least one image first.');
+    return;
+  }
+  const zip = new JSZip();
+  const folder = zip.folder('indigo-edit-finals');
+  approved.forEach(res => {
+    const base64 = res.editedSrc.split(',')[1];
+    const ext = res.file.type === 'image/png' ? 'png' : 'jpg';
+    folder.file(`indigo_${res.file.name.replace(/\.[^/.]+$/, '')}.${ext}`, base64, { base64: true });
+  });
+  const blob = await zip.generateAsync({ type: 'blob' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `indigo-edit-${currentPreset}-${Date.now()}.zip`;
+  a.click();
+}
+
+// ── UPLOAD HANDLING ──
+function handleFiles(files) {
+  const valid = files.filter(f => f.type.startsWith('image/'));
+  const remaining = 30 - uploadedFiles.length;
+  const toAdd = valid.slice(0, remaining);
+  toAdd.forEach(file => {
+    if (uploadedFiles.find(f => f.name === file.name)) return;
+    uploadedFiles.push(file);
+    const reader = new FileReader();
+    reader.onload = e => renderCard(file, e.target.result);
+    reader.readAsDataURL(file);
+  });
+  document.getElementById('processBtn').disabled = uploadedFiles.length === 0;
+  if (uploadedFiles.length > 0) document.getElementById('uploadZone').classList.add('has-files');
+}
+
+// ── EVENTS ──
+const uploadZone = document.getElementById('uploadZone');
+const fileInput  = document.getElementById('fileInput');
+
+uploadZone.addEventListener('click', (e) => {
+  if (!e.target.closest('.img-card') && !e.target.closest('.img-remove')) fileInput.click();
+});
+fileInput.addEventListener('change', e => { handleFiles(Array.from(e.target.files)); fileInput.value = ''; });
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('dragover'); handleFiles(Array.from(e.dataTransfer.files)); });
+
+document.getElementById('processBtn').onclick = processBatch;
+document.getElementById('clearBtn').onclick = clearAll;
+document.getElementById('downloadBtn').onclick = downloadZIP;
+
+document.getElementById('intensitySlider').oninput = function() {
+  document.getElementById('intensityVal').textContent = Math.round(this.value * 100) + '%';
+};
+document.getElementById('qualitySlider').oninput = function() {
+  document.getElementById('qualityVal').textContent = this.value + '%';
+};
+
+document.querySelectorAll('.preset-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.preset-item').forEach(p => p.classList.remove('active'));
+    item.classList.add('active');
+    currentPreset = item.dataset.preset;
+  });
+});
+
+// ── GOOGLE DRIVE PICKER ──
+// ⚠️  PASTE YOUR GOOGLE OAUTH CLIENT ID BELOW
+const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE';
+const GOOGLE_API_KEY   = '';    // leave blank — not required for Picker with OAuth
+const SCOPE = 'https://www.googleapis.com/auth/drive.readonly';
+
+let pickerApiLoaded = false;
+let oauthToken = null;
+const driveStatus = document.getElementById('driveStatus');
+
+function showDriveStatus(msg, type) {
+  driveStatus.textContent = msg;
+  driveStatus.className = 'drive-status show' + (type ? ' ' + type : '');
+}
+
+function openDrivePicker() {
+  if (GOOGLE_CLIENT_ID === 'YOUR_GOOGLE_CLIENT_ID_HERE') {
+    showDriveStatus('⚠ Set your Google Client ID in the file before using Drive import.', 'err');
+    return;
+  }
+  showDriveStatus('Connecting to Google Drive…');
+  gapi.load('auth2,picker', () => {
+    pickerApiLoaded = true;
+    gapi.auth2.init({ client_id: GOOGLE_CLIENT_ID }).then(() => {
+      gapi.auth2.getAuthInstance().signIn({ scope: SCOPE }).then(user => {
+        oauthToken = user.getAuthResponse().access_token;
+        showDriveStatus('Drive connected — choose your photos.', 'ok');
+        buildPicker();
+      }).catch(err => {
+        showDriveStatus('Sign-in cancelled or failed.', 'err');
+      });
+    });
+  });
+}
+
+function buildPicker() {
+  const view = new google.picker.View(google.picker.ViewId.DOCS_IMAGES);
+  view.setMimeTypes('image/jpeg,image/png,image/webp');
+
+  const picker = new google.picker.PickerBuilder()
+    .addView(view)
+    .setOAuthToken(oauthToken)
+    .setTitle('Select images for Indigo Edit')
+    .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+    .setCallback(pickerCallback)
+    .build();
+  picker.setVisible(true);
+}
+
+async function pickerCallback(data) {
+  if (data.action !== google.picker.Action.PICKED) return;
+  const docs = data[google.picker.Response.DOCUMENTS];
+  showDriveStatus(`Importing ${docs.length} image(s) from Drive…`);
+
+  let loaded = 0;
+  for (const doc of docs) {
+    const fileId = doc[google.picker.Document.ID];
+    const name   = doc[google.picker.Document.NAME];
+    const mime   = doc[google.picker.Document.MIME_TYPE] || 'image/jpeg';
+
+    try {
+      const res = await fetch(
+        `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+        { headers: { Authorization: `Bearer ${oauthToken}` } }
+      );
+      const blob = await res.blob();
+      const file = new File([blob], name, { type: mime });
+
+      if (!uploadedFiles.find(f => f.name === file.name)) {
+        uploadedFiles.push(file);
+        const src = await readFile(file);
+        renderCard(file, src);
+      }
+      loaded++;
+    } catch (err) {
+      console.error('Drive import failed for', name, err);
+    }
+  }
+
+  document.getElementById('processBtn').disabled = uploadedFiles.length === 0;
+  if (uploadedFiles.length > 0) document.getElementById('uploadZone').classList.add('has-files');
+  showDriveStatus(`${loaded} image(s) imported from Drive.`, 'ok');
+}
+</script>
+</body>
+</html>

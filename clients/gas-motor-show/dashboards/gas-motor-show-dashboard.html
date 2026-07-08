@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gas Motor Show — Plans Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #080808;
+  --s1: #101010;
+  --s2: #161616;
+  --border: #1e1e1e;
+  --border2: #2a2a2a;
+  --accent: #e8f429;
+  --accent2: #ff5c1a;
+  --teal: #2dffc4;
+  --text: #ececec;
+  --muted: #555;
+  --dim: #333;
+  --red: #ff4040;
+  --amber: #ffb020;
+  --fn: 'Bebas Neue', sans-serif;
+  --fb: 'DM Sans', sans-serif;
+  --fm: 'DM Mono', monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--fb);
+  min-height: 100vh;
+  padding: 2rem;
+  font-size: 13px;
+}
+
+.page { max-width: 980px; margin: 0 auto; }
+
+/* ── Header ── */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+  animation: up .5s ease both;
+}
+
+.header-left .eyebrow {
+  font-family: var(--fm);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+
+.header-left h1 {
+  font-family: var(--fn);
+  font-size: 46px;
+  letter-spacing: .05em;
+  line-height: 1;
+  color: var(--text);
+}
+
+.header-left h1 em {
+  color: var(--accent);
+  font-style: normal;
+}
+
+.header-right {
+  text-align: right;
+}
+
+.header-right .dates {
+  font-family: var(--fn);
+  font-size: 22px;
+  letter-spacing: .06em;
+  color: var(--accent);
+}
+
+.header-right .sub {
+  font-family: var(--fm);
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* ── KPI strip ── */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.kpi {
+  background: var(--s1);
+  padding: 1rem 1.1rem;
+  animation: up .5s ease both;
+}
+.kpi:nth-child(1){animation-delay:.06s}
+.kpi:nth-child(2){animation-delay:.1s}
+.kpi:nth-child(3){animation-delay:.14s}
+.kpi:nth-child(4){animation-delay:.18s}
+
+.kpi-label {
+  font-family: var(--fm);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.kpi-val {
+  font-family: var(--fn);
+  font-size: 30px;
+  letter-spacing: .03em;
+  color: var(--text);
+  line-height: 1;
+}
+
+.kpi-val.accent { color: var(--accent); }
+.kpi-val.amber  { color: var(--amber); }
+.kpi-val.teal   { color: var(--teal); }
+
+.kpi-note {
+  font-family: var(--fm);
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+/* ── Grid ── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1.1rem;
+  animation: up .5s ease both;
+}
+
+.card-title {
+  font-family: var(--fm);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  margin-bottom: .9rem;
+  padding-bottom: .6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── City legs ── */
+.leg {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+.leg:last-child { border-bottom: none; }
+
+.leg-num {
+  font-family: var(--fn);
+  font-size: 20px;
+  color: var(--dim);
+  line-height: 1;
+  width: 22px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+.leg-body { flex: 1; }
+
+.leg-city {
+  font-family: var(--fn);
+  font-size: 17px;
+  letter-spacing: .04em;
+  color: var(--text);
+  line-height: 1;
+}
+
+.leg-venue {
+  font-family: var(--fm);
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.leg-date {
+  font-family: var(--fm);
+  font-size: 10px;
+  color: var(--accent);
+  margin-top: 2px;
+}
+
+.leg-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.leg-people {
+  font-family: var(--fm);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.leg-cost {
+  font-family: var(--fm);
+  font-size: 11px;
+  color: var(--text);
+  margin-top: 3px;
+}
+
+/* ── Budget breakdown ── */
+.budget-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+}
+.budget-row:last-child { border-bottom: none; }
+
+.budget-label { 
+  font-size: 12px; 
+  color: var(--text); 
+  flex: 1;
+}
+
+.budget-sub {
+  font-family: var(--fm);
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.budget-bar-wrap {
+  width: 80px;
+  height: 3px;
+  background: var(--border2);
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.budget-bar {
+  height: 100%;
+  border-radius: 2px;
+}
+
+.budget-amt {
+  font-family: var(--fm);
+  font-size: 11px;
+  color: var(--text);
+  white-space: nowrap;
+  width: 70px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.budget-total-row {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  margin-top: 4px;
+  border-top: 1px solid var(--border2);
+}
+
+.budget-total-label {
+  font-family: var(--fm);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+}
+
+.budget-total-val {
+  font-family: var(--fn);
+  font-size: 22px;
+  color: var(--accent);
+  letter-spacing: .03em;
+}
+
+/* ── Suzuki card ── */
+.suzuki-card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--amber);
+  border-radius: 3px;
+  padding: 1.1rem;
+  animation: up .5s ease both;
+  animation-delay: .3s;
+  margin-bottom: 1.5rem;
+}
+
+.suzuki-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: .8rem;
+  padding-bottom: .7rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.suzuki-title {
+  font-family: var(--fn);
+  font-size: 20px;
+  letter-spacing: .05em;
+  color: var(--amber);
+}
+
+.suzuki-badge {
+  font-family: var(--fm);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  background: rgba(255,176,32,.1);
+  color: var(--amber);
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+
+.suzuki-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
+.suzuki-section-label {
+  font-family: var(--fm);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.suzuki-item {
+  font-family: var(--fm);
+  font-size: 11px;
+  color: var(--text);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.suzuki-item:last-child { border-bottom: none; }
+
+.arrow { color: var(--accent2); font-size: 10px; }
+
+.suzuki-ask {
+  background: rgba(255,176,32,.05);
+  border: 1px solid rgba(255,176,32,.15);
+  border-radius: 2px;
+  padding: 8px 10px;
+}
+
+.suzuki-ask-main {
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.suzuki-ask-sub {
+  font-family: var(--fm);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.suzuki-saving {
+  font-family: var(--fn);
+  font-size: 18px;
+  color: var(--teal);
+  margin-top: 6px;
+  letter-spacing: .04em;
+}
+
+/* ── Content plan ── */
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.content-item {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 8px 10px;
+}
+
+.content-item-label {
+  font-family: var(--fm);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.content-item-val {
+  font-size: 12px;
+  color: var(--text);
+}
+
+/* ── Team ── */
+.team-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.team-row:last-child { border-bottom: none; }
+
+.team-name { font-size: 12px; color: var(--text); }
+.team-role { font-family: var(--fm); font-size: 10px; color: var(--muted); margin-top: 2px; }
+.team-tag {
+  font-family: var(--fm);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: 2px 7px;
+  border-radius: 2px;
+}
+.tag-talent   { background: rgba(232,244,41,.1);  color: var(--accent); }
+.tag-prod     { background: rgba(45,255,196,.1);   color: var(--teal); }
+.tag-director { background: rgba(255,92,26,.1);    color: var(--accent2); }
+
+/* ── Animations ── */
+@keyframes up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+  body { padding: 1rem; }
+  .kpi-row { grid-template-columns: repeat(2,1fr); }
+  .grid-2, .grid-3, .suzuki-body { grid-template-columns: 1fr; }
+  .header { flex-direction: column; align-items: flex-start; gap: .8rem; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <p class="eyebrow">Housing Hues · Media Coverage Plan</p>
+      <h1>GAS MOTOR <em>SHOW</em></h1>
+    </div>
+    <div class="header-right">
+      <p class="dates">JUN 9 – 14</p>
+      <p class="sub">4 Cities · 8 People · National Takeover</p>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <p class="kpi-label">Cities</p>
+      <p class="kpi-val">4</p>
+      <p class="kpi-note">KLP · JHB · CPT · DBN</p>
+    </div>
+    <div class="kpi">
+      <p class="kpi-label">Tour Days</p>
+      <p class="kpi-val accent">6</p>
+      <p class="kpi-note">Jun 9 → Jun 14</p>
+    </div>
+    <div class="kpi">
+      <p class="kpi-label">Est. Budget</p>
+      <p class="kpi-val amber">R 65.5k</p>
+      <p class="kpi-note">Transport + Accommodation</p>
+    </div>
+    <div class="kpi">
+      <p class="kpi-label">Suzuki Saving</p>
+      <p class="kpi-val teal">R 15k</p>
+      <p class="kpi-note">If vehicle provided</p>
+    </div>
+  </div>
+
+  <!-- Suzuki follow-up -->
+  <div class="suzuki-card">
+    <div class="suzuki-header">
+      <p class="suzuki-title">SUZUKI PARTNERSHIP — PITCH PENDING</p>
+      <span class="suzuki-badge">⚠ Not Yet Sent</span>
+    </div>
+    <div class="suzuki-body">
+      <div>
+        <p class="suzuki-section-label">What We Deliver</p>
+        <div class="suzuki-item"><span class="arrow">→</span> Daily video content</div>
+        <div class="suzuki-item"><span class="arrow">→</span> 50+ branded assets</div>
+        <div class="suzuki-item"><span class="arrow">→</span> 30-sec + 60-sec spots</div>
+        <div class="suzuki-item"><span class="arrow">→</span> 3–5 Reels/Stories daily</div>
+        <div class="suzuki-item"><span class="arrow">→</span> Full BTS package</div>
+        <div class="suzuki-item"><span class="arrow">→</span> Full content rights</div>
+      </div>
+      <div>
+        <p class="suzuki-section-label">What We Need</p>
+        <div class="suzuki-item"><span class="arrow">→</span> Vehicle access</div>
+        <div class="suzuki-item"><span class="arrow">→</span> On-site logistics</div>
+        <div class="suzuki-item"><span class="arrow">→</span> Dealer network access</div>
+        <div class="suzuki-item"><span class="arrow">→</span> Content approval flow</div>
+      </div>
+      <div>
+        <p class="suzuki-section-label">The Ask</p>
+        <div class="suzuki-ask">
+          <p class="suzuki-ask-main">Provide a vehicle for the full tour duration</p>
+          <p class="suzuki-ask-sub">Jun 9–14 · 4 cities · national coverage</p>
+          <p class="suzuki-saving">Saves us ~R 15,000</p>
+        </div>
+        <p class="suzuki-ask-sub" style="margin-top:8px; color: var(--amber);">Deck ready (V2) · Send to Suzuki now</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tour legs + Budget -->
+  <div class="grid-2">
+
+    <!-- Tour legs -->
+    <div class="card" style="animation-delay:.22s">
+      <p class="card-title">Tour Legs</p>
+
+      <div class="leg">
+        <span class="leg-num">01</span>
+        <div class="leg-body">
+          <p class="leg-city">KLERKSDORP</p>
+          <p class="leg-venue">Base · Depart Jun 9</p>
+          <p class="leg-date">Jun 9 · Drive to Joburg (2.5 hrs)</p>
+        </div>
+        <div class="leg-right">
+          <p class="leg-people">8 people</p>
+          <p class="leg-cost">R 3,500</p>
+        </div>
+      </div>
+
+      <div class="leg">
+        <span class="leg-num">02</span>
+        <div class="leg-body">
+          <p class="leg-city">JOHANNESBURG</p>
+          <p class="leg-venue">Fast Five Raceway</p>
+          <p class="leg-date">Jun 9 · 1 night</p>
+        </div>
+        <div class="leg-right">
+          <p class="leg-people">8 people</p>
+          <p class="leg-cost">R 19,600</p>
+        </div>
+      </div>
+
+      <div class="leg">
+        <span class="leg-num">03</span>
+        <div class="leg-body">
+          <p class="leg-city">CAPE TOWN</p>
+          <p class="leg-venue">Road Show</p>
+          <p class="leg-date">Jun 10 · 2 nights</p>
+        </div>
+        <div class="leg-right">
+          <p class="leg-people">8 people</p>
+          <p class="leg-cost">R 28,000</p>
+        </div>
+      </div>
+
+      <div class="leg">
+        <span class="leg-num">04</span>
+        <div class="leg-body">
+          <p class="leg-city">DURBAN</p>
+          <p class="leg-venue">Barnyard (VIP) · Suncoast Casino</p>
+          <p class="leg-date">Jun 11–14 · 3 nights</p>
+        </div>
+        <div class="leg-right">
+          <p class="leg-people">8 people</p>
+          <p class="leg-cost">R 28,800</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Budget -->
+    <div class="card" style="animation-delay:.26s">
+      <p class="card-title">Estimated Budget</p>
+
+      <div class="budget-row">
+        <div>
+          <p class="budget-label">Klerksdorp → Joburg</p>
+          <p class="budget-sub">Minibus hire · return</p>
+        </div>
+        <div class="budget-bar-wrap"><div class="budget-bar" style="width:22%; background:#c8f135;"></div></div>
+        <p class="budget-amt">R 3,500</p>
+      </div>
+      <div class="budget-row">
+        <div>
+          <p class="budget-label">Joburg → Cape Town</p>
+          <p class="budget-sub">Flights · R1,800pp × 8</p>
+        </div>
+        <div class="budget-bar-wrap"><div class="budget-bar" style="width:91%; background:#c8f135;"></div></div>
+        <p class="budget-amt">R 14,400</p>
+      </div>
+      <div class="budget-row">
+        <div>
+          <p class="budget-label">Joburg → Durban</p>
+          <p class="budget-sub">Flights · R1,200pp × 8</p>
+        </div>
+        <div class="budget-bar-wrap"><div class="budget-bar" style="width:61%; background:#c8f135;"></div></div>
+        <p class="budget-amt">R 9,600</p>
+      </div>
+      <div class="budget-row">
+        <div>
+          <p class="budget-label">Local transport</p>
+          <p class="budget-sub">Minibus · CPT 2 days + DBN 3 days</p>
+        </div>
+        <div class="budget-bar-wrap"><div class="budget-bar" style="width:25%; background:#c8f135;"></div></div>
+        <p class="budget-amt">R 4,000</p>
+      </div>
+      <div class="budget-row">
+        <div>
+          <p class="budget-label">Joburg accom</p>
+          <p class="budget-sub">R650pp × 8 × 1 night</p>
+        </div>
+        <div class="budget-bar-wrap"><div class="budget-bar" style="width:33%; background:#2dffc4;"></div></div>
+        <p class="budget-amt">R 5,200</p>
+      </div>
+      <div class="budget-row">
+        <div>
+          <p class="budget-label">Cape Town accom</p>
+          <p class="budget-sub">R750pp × 8 × 2 nights</p>
+        </div>
+        <div class="budget-bar-wrap"><div class="budget-bar" style="width:76%; background:#2dffc4;"></div></div>
+        <p class="budget-amt">R 12,000</p>
+      </div>
+      <div class="budget-row">
+        <div>
+          <p class="budget-label">Durban accom</p>
+          <p class="budget-sub">R700pp × 8 × 3 nights</p>
+        </div>
+        <div class="budget-bar-wrap"><div class="budget-bar" style="width:100%; background:#2dffc4;"></div></div>
+        <p class="budget-amt">R 16,800</p>
+      </div>
+
+      <div class="budget-total-row">
+        <span class="budget-total-label">Total Estimated</span>
+        <span class="budget-total-val">R 65,500</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content plan + Team -->
+  <div class="grid-2">
+
+    <!-- Content -->
+    <div class="card" style="animation-delay:.3s">
+      <p class="card-title">Daily Content Plan</p>
+      <div class="content-grid">
+        <div class="content-item">
+          <p class="content-item-label">Format</p>
+          <p class="content-item-val">30-sec spot</p>
+        </div>
+        <div class="content-item">
+          <p class="content-item-label">Format</p>
+          <p class="content-item-val">60-sec feature</p>
+        </div>
+        <div class="content-item">
+          <p class="content-item-label">Social</p>
+          <p class="content-item-val">3–5 Reels / Stories</p>
+        </div>
+        <div class="content-item">
+          <p class="content-item-label">Package</p>
+          <p class="content-item-val">BTS per leg</p>
+        </div>
+        <div class="content-item">
+          <p class="content-item-label">Total Assets</p>
+          <p class="content-item-val">50+ branded</p>
+        </div>
+        <div class="content-item">
+          <p class="content-item-label">Production</p>
+          <p class="content-item-val">018 Studios</p>
+        </div>
+        <div class="content-item" style="grid-column: span 2;">
+          <p class="content-item-label">Distribution</p>
+          <p class="content-item-val">8 Provinces · Verified platforms · Organic amplification · Zero ad spend</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team -->
+    <div class="card" style="animation-delay:.34s">
+      <p class="card-title">Team</p>
+      <div class="team-row">
+        <div>
+          <p class="team-name">Lesego Mongale</p>
+          <p class="team-role">Independent Media Director</p>
+        </div>
+        <span class="team-tag tag-director">Director</span>
+      </div>
+      <div class="team-row">
+        <div>
+          <p class="team-name">Bantu Knots</p>
+          <p class="team-role">Talent</p>
+        </div>
+        <span class="team-tag tag-talent">Talent</span>
+      </div>
+      <div class="team-row">
+        <div>
+          <p class="team-name">Flow Jones</p>
+          <p class="team-role">Talent</p>
+        </div>
+        <span class="team-tag tag-talent">Talent</span>
+      </div>
+      <div class="team-row">
+        <div>
+          <p class="team-name">Save Hxpe</p>
+          <p class="team-role">Talent</p>
+        </div>
+        <span class="team-tag tag-talent">Talent</span>
+      </div>
+      <div class="team-row">
+        <div>
+          <p class="team-name">018 Studios</p>
+          <p class="team-role">Video production + BTS</p>
+        </div>
+        <span class="team-tag tag-prod">Production</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

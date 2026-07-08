@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SuperFly · Internal Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#f5f5f2;
+  --surface:#ffffff;
+  --surface2:#f7f6f2;
+  --border:#e0ddd6;
+  --border2:#d4d0c8;
+  --border3:#c8c4ba;
+  --gold:#c9a800;
+  --gold2:#e8c200;
+  --gold-dim:#8a7200;
+  --text:#1a1916;
+  --text-mid:#5a5850;
+  --text-dim:#9a9890;
+  --green:#2d8a3e;
+  --amber:#b87010;
+  --red:#c0392b;
+  --shadow:0 8px 32px rgba(0,0,0,0.07),0 2px 8px rgba(0,0,0,0.04),inset 0 1px 0 rgba(255,255,255,0.9);
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.bg-grid{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,0,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.03) 1px,transparent 1px);background-size:60px 60px;}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 44px;background:rgba(245,245,242,0.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--border2);box-shadow:0 2px 16px rgba(0,0,0,0.05);}
+.brand{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.1em;color:var(--text);}
+.brand .x{color:var(--gold);}
+.brand-sub{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);border-left:1px solid var(--border2);padding-left:14px;margin-left:14px;}
+.topbar-left{display:flex;align-items:center;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.tag{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:5px 12px;border-radius:3px;}
+.tag-internal{background:#1a1916;color:#f5f5f2;}
+.tag-date{background:var(--surface2);color:var(--text-mid);border:1px solid var(--border2);}
+.hold-btn{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:5px 14px;border-radius:3px;border:1px solid var(--border3);background:transparent;color:var(--text-mid);cursor:pointer;transition:all .2s;position:relative;overflow:hidden;min-width:110px;}
+.hold-btn:hover{border-color:var(--gold);color:var(--gold);}
+.hold-ring{position:absolute;inset:0;background:var(--gold);transform:scale(0);opacity:0;transform-origin:left center;z-index:0;}
+.hold-label{position:relative;z-index:1;}
+.hold-active{background:var(--gold)!important;color:#000!important;border-color:var(--gold)!important;}
+
+/* SUMMARY BAR */
+.summary{position:relative;z-index:1;display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--border2);background:var(--surface);}
+.sitem{padding:20px 24px;border-right:1px solid var(--border);position:relative;}
+.sitem:last-child{border-right:none;}
+.sitem-label{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
+.sitem-val{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;color:var(--text);letter-spacing:0.02em;}
+.sitem-val .g{color:var(--gold);}
+.sitem-sub{font-size:11px;color:var(--text-dim);margin-top:4px;}
+.sitem-sub .up{color:var(--green);font-weight:600;}
+.sitem-sub .warn{color:var(--amber);font-weight:600;}
+.sitem-sub .danger{color:var(--red);font-weight:600;}
+
+/* MAIN GRID */
+.main{position:relative;z-index:1;padding:24px 44px;display:grid;grid-template-columns:repeat(12,1fr);gap:14px;}
+.s4{grid-column:span 4;}.s5{grid-column:span 5;}.s6{grid-column:span 6;}.s7{grid-column:span 7;}.s8{grid-column:span 8;}.s12{grid-column:span 12;}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:20px 22px;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s,border-color .2s;}
+.card:hover{border-color:var(--border3);box-shadow:0 16px 48px rgba(0,0,0,0.09);}
+.clabel{font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
+.cbadge{font-size:9px;padding:2px 9px;border-radius:3px;background:var(--surface2);color:var(--text-mid);border:1px solid var(--border2);text-transform:none;font-weight:500;}
+.cbadge-warn{background:rgba(184,112,16,0.08);color:var(--amber);border-color:rgba(184,112,16,0.2);}
+.cbadge-ok{background:rgba(45,138,62,0.08);color:var(--green);border-color:rgba(45,138,62,0.2);}
+.div{border:none;border-top:1px solid var(--border);margin:12px 0;}
+.dsec{font-size:8px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-dim);padding:8px 0 5px;border-bottom:1px solid var(--border);}
+.drow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.drow:last-child{border-bottom:none;}
+.dkey{color:var(--text-dim);}
+.dval{color:var(--text);font-weight:500;text-align:right;}
+
+/* ARTIST TABLE */
+.twrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead th{text-align:left;font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);padding:7px 0 9px;border-bottom:1px solid var(--border2);}
+tbody td{padding:9px 12px 9px 0;border-bottom:1px solid var(--border);vertical-align:middle;font-size:12.5px;transition:color .12s;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover td{color:var(--text);}
+tbody tr:hover{background:rgba(201,168,0,0.012);}
+.td-num{font-size:9px;color:var(--text-dim);width:24px;}
+.td-name{font-weight:600;color:var(--text);white-space:nowrap;}
+.td-handle{font-size:11px;color:var(--text-dim);}
+.td-followers{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:0.03em;color:var(--text-mid);white-space:nowrap;}
+.td-fee{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:0.03em;color:var(--text);white-space:nowrap;text-align:right;}
+.td-fee.confirmed{color:var(--green);}
+.td-status{white-space:nowrap;}
+.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;}
+.dot-confirmed{background:var(--green);}
+.dot-pending{background:var(--amber);}
+.dot-tbc{background:var(--border3);}
+.total-row td{border-top:2px solid var(--border2)!important;padding-top:12px!important;}
+.total-row .td-name{color:var(--gold);}
+.total-row .td-fee{color:var(--gold);font-size:20px;}
+
+/* BUDGET */
+.budget-list{display:flex;flex-direction:column;gap:0;}
+.brow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:12.5px;}
+.brow:last-child{border-bottom:none;}
+.brow-label{color:var(--text-mid);}
+.brow-note{font-size:10px;color:var(--text-dim);margin-top:1px;}
+.brow-amount{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--text);letter-spacing:0.02em;}
+.budget-total-bar{margin-top:14px;background:var(--gold);border-radius:5px;padding:11px 16px;display:flex;justify-content:space-between;align-items:center;}
+.bt-label{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(0,0,0,0.55);}
+.bt-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:#000;letter-spacing:0.02em;}
+
+/* PROGRESS / OUTSTANDING */
+.oitem{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:12.5px;}
+.oitem:last-child{border-bottom:none;}
+.olabel{color:var(--text-mid);}
+.opend{color:var(--amber);font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;}
+.odone{color:var(--green);font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;}
+.oready{color:var(--gold-dim);font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;}
+
+/* SCHEDULE */
+.sched-item{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.sched-item:last-child{border-bottom:none;}
+.sched-date{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--gold);min-width:60px;line-height:1.2;}
+.sched-body{font-size:12.5px;color:var(--text-mid);line-height:1.5;}
+.sched-body strong{color:var(--text);display:block;}
+
+/* FOOTER */
+footer{position:relative;z-index:1;border-top:1px solid var(--border2);padding:16px 44px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text-dim);letter-spacing:0.06em;background:var(--surface);}
+footer span{color:var(--gold);}
+
+/* RESPONSIVE */
+@media(max-width:1100px){.s4,.s5,.s6,.s7,.s8{grid-column:span 12;}.summary{grid-template-columns:repeat(3,1fr);}.sitem:nth-child(4),.sitem:nth-child(5){border-top:1px solid var(--border);}}
+@media(max-width:700px){.topbar,.main,footer{padding-left:16px;padding-right:16px;}.summary{grid-template-columns:1fr 1fr;}.td-handle,.td-followers{display:none;}}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border3);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--gold-dim);}
+[data-editable]:focus{outline:2px solid var(--gold)!important;border-radius:3px;background:rgba(201,168,0,0.04)!important;}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="brand">SuperFly <span class="x">×</span> HH</div>
+    <span class="brand-sub">Internal Ops Dashboard</span>
+  </div>
+  <div class="topbar-right">
+    <span class="tag tag-internal">Housing Hues · Confidential</span>
+    <span class="tag tag-date" id="dateTag">Sep 2026</span>
+    <button class="hold-btn" id="holdBtn">
+      <span class="hold-label" id="holdLabel">Hold to Edit</span>
+      <span class="hold-ring" id="holdRing"></span>
+    </button>
+  </div>
+</header>
+
+<!-- SUMMARY BAR -->
+<section class="summary">
+  <div class="sitem">
+    <div class="sitem-label">Artists Confirmed</div>
+    <div class="sitem-val"><span class="g" id="sumArtists">22</span></div>
+    <div class="sitem-sub">of 22 roster</div>
+  </div>
+  <div class="sitem">
+    <div class="sitem-label">Total Booking Cost</div>
+    <div class="sitem-val"><span class="g" id="sumBooking">—</span></div>
+    <div class="sitem-sub" id="sumBookingSub"></div>
+  </div>
+  <div class="sitem">
+    <div class="sitem-label">Marketing Budget</div>
+    <div class="sitem-val"><span class="g" id="sumMarketing">—</span></div>
+    <div class="sitem-sub">11 line items</div>
+  </div>
+  <div class="sitem">
+    <div class="sitem-label">Total Production Cost</div>
+    <div class="sitem-val"><span class="g" id="sumTotal">—</span></div>
+    <div class="sitem-sub" id="sumTotalSub"></div>
+  </div>
+  <div class="sitem">
+    <div class="sitem-label">Sponsors Closed</div>
+    <div class="sitem-val"><span class="g">0</span></div>
+    <div class="sitem-sub"><span class="warn">Pitches in progress</span></div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- Artist Roster & Fees -->
+  <div class="card s12">
+    <div class="clabel">
+      Artist Roster & Booking Fees
+      <span class="cbadge cbadge-warn" id="rosterStatus">Fees TBC — confirmed in principle</span>
+    </div>
+    <div class="twrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Artist</th>
+            <th>Handle</th>
+            <th>Followers</th>
+            <th style="text-align:right;">Booking Fee</th>
+            <th style="text-align:right;">Status</th>
+          </tr>
+        </thead>
+        <tbody id="artistTbody"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:var(--text-dim);padding-top:10px;border-top:1px solid var(--border);">
+      <strong style="color:var(--text);">Photographer / Director:</strong> Khotso Maphathe (@director_k.__) · International award-winning filmmaker · Space Agency Africa · <strong style="color:var(--text);">R7,000</strong>
+    </div>
+  </div>
+
+  <!-- Event Schedule -->
+  <div class="card s4">
+    <div class="clabel">Event Schedule</div>
+    <div class="sched-item">
+      <div class="sched-date">Thu<br/>4 Sept</div>
+      <div class="sched-body"><strong>UFS Campus Activation</strong>25,000+ students · Connect Zone</div>
+    </div>
+    <div class="sched-item">
+      <div class="sched-date">Fri<br/>5 Sept</div>
+      <div class="sched-body"><strong>CUT Campus Activation</strong>10,000+ students · Connect Zone</div>
+    </div>
+    <div class="sched-item">
+      <div class="sched-date">Sat<br/>6 Sept</div>
+      <div class="sched-body"><strong>Main Event — Sandy's Bar</strong>5,000 cap · Willows, Bloemfontein · Paid ticketed</div>
+    </div>
+    <div class="sched-item">
+      <div class="sched-date">Mon<br/>8 Sept</div>
+      <div class="sched-body"><strong>Studio Camp</strong>Content capture · post-event buzz</div>
+    </div>
+    <div class="div"></div>
+    <div class="drow"><span class="dkey">Media</span><span class="dval">Slikour on Life</span></div>
+    <div class="drow"><span class="dkey">Event type</span><span class="dval">Paid · Independent</span></div>
+    <div class="drow"><span class="dkey">Total physical reach</span><span class="dval">40,000+</span></div>
+  </div>
+
+  <!-- Marketing Budget -->
+  <div class="card s4">
+    <div class="clabel">Marketing Budget <span class="cbadge" id="mktBadge">—</span></div>
+    <div class="budget-list" id="budgetList"></div>
+    <div class="budget-total-bar">
+      <div class="bt-label">Marketing Total</div>
+      <div class="bt-val" id="budgetTotalVal">—</div>
+    </div>
+  </div>
+
+  <!-- Outstanding -->
+  <div class="card s4">
+    <div class="clabel">Progress Tracker</div>
+    <div id="outstandingContainer"></div>
+  </div>
+
+</main>
+
+<footer>
+  <div>Housing Hues · Creative &amp; Operational Agency · <span>Internal Use Only</span></div>
+  <div id="footerDate">June 2026</div>
+</footer>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+// fee = booking fee in ZAR (0 = TBC)
+const artists = [
+  {name:'Blxckie',          handle:'@blxckie_',          followers:'1,100,000', fee:30000, status:'confirmed'},
+  {name:'Okmalumkoolkat',   handle:'@okmalumkoolkat',    followers:'1,000,000', fee:35000, status:'confirmed'},
+  {name:'Mr JazziQ',        handle:'@mrjazziq',          followers:'2,000,000', fee:25000, status:'confirmed'},
+  {name:'Saudi',            handle:'@saudi_rsa',         followers:'278,000',   fee:15000, status:'confirmed'},
+  {name:'031 Choppa',       handle:'@031choppa',         followers:'109,000',   fee:15000, status:'confirmed'},
+
+  {name:'K.Keed',           handle:'@whodat_keed',       followers:'86,000',    fee:10000, status:'confirmed'},
+  {name:'DJY Lozii',        handle:'@djylozii',          followers:'7,728',     fee:8000,  status:'confirmed'},
+  {name:'SaveHXPE',         handle:'@savehxpe',          followers:'35,000',    fee:7000,  status:'confirmed'},
+  {name:'Roii',             handle:'@1roiii',            followers:'97,080',    fee:6000,  status:'confirmed'},
+  {name:'Flow Jones Jr.',   handle:'@flowjones_jr',      followers:'29,788',    fee:6000,  status:'confirmed'},
+  {name:'LaCabra',          handle:'@_lacabra.ww',       followers:'61,132',    fee:5000,  status:'confirmed'},
+  {name:'Bantu Nots',       handle:'@bantu.nots',        followers:'15,786',    fee:5000,  status:'confirmed'},
+  {name:'Sastii',           handle:'@sastii_sa_',        followers:'28,000',    fee:4000,  status:'confirmed'},
+  {name:'Malfoy',           handle:'@malfoy_rsa',        followers:'—',         fee:4000,  status:'confirmed'},
+  {name:"Kenny Mc'Vital",   handle:'@realkennymcvital',  followers:'48,000',    fee:3000,  status:'confirmed'},
+  {name:'HeMustBeFabulous', handle:'@hemustbefabulous',  followers:'22,660',    fee:3000,  status:'confirmed'},
+  {name:'Skaphace',         handle:'@skaphace_',         followers:'42,800',    fee:3000,  status:'confirmed'},
+  {name:'Duke Ntando',      handle:'@duke_ntando',       followers:'850,000',   fee:2500,  status:'confirmed'},
+  {name:'Skatle',           handle:'@skatle____',        followers:'8,613',     fee:2000,  status:'confirmed'},
+  {name:'Lelo',             handle:'@hopefully.lelo',    followers:'38,800',    fee:2000,  status:'confirmed'},
+  {name:'KxR',              handle:'@kxr_official_',     followers:'1,048',     fee:2000,  status:'confirmed'},
+  {name:'Syre Geminii',     handle:'@syre_geminii',      followers:'29,600',    fee:2000,  status:'confirmed'},
+];
+
+const budget = [
+  {label:'Banners',             amount:2000, note:'×3/4'},
+  {label:'Flyer',               amount:700,  note:''},
+  {label:'T-Shirts',            amount:900,  note:'×10'},
+  {label:'Graphic Design',      amount:1000, note:'Boohle'},
+  {label:'Car Flyers',          amount:200,  note:'×50'},
+  {label:'Bottle Girls',        amount:2500, note:'×5'},
+  {label:'Influencers',         amount:1600, note:'×7'},
+  {label:'Photographer/Director',amount:7000,note:'Khotso Maphathe · Lesotho'},
+  {label:'Photographers BFN',   amount:1500, note:'×5'},
+  {label:'Convoy Stance',       amount:2000, note:'Activation'},
+  {label:'Slikour on Life',     amount:10000,note:'Media partner · amplification'},
+];
+
+const outstanding = [
+  {label:'Sponsor 1 pitch sent',         status:'pending'},
+  {label:'Sponsor 2 pitch sent',         status:'pending'},
+  {label:'Sponsor 3 pitch sent',         status:'pending'},
+  {label:'Booking contracts issued',     status:'pending'},
+  {label:'SuperFly logo (hi-res)',       status:'pending'},
+  {label:'Radio reach figures',          status:'pending'},
+  {label:'Deck rebuild — 22 artists',    status:'ready'},
+  {label:'Artist roster locked',         status:'done'},
+  {label:'Marketing budget confirmed',   status:'done'},
+  {label:'Venue confirmed — Sandy\'s',   status:'done'},
+  {label:'Schedule confirmed',           status:'done'},
+];
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function fmt(n){return n>=1000?"R"+(n/1000)+"k":"R"+n;}
+
+function renderArtists(){
+  const tb = document.getElementById('artistTbody');
+  const totalFee = artists.reduce((s,a)=>s+a.fee,0);
+  tb.innerHTML = artists.map((a,i)=>`
+    <tr>
+      <td class="td-num">${String(i+1).padStart(2,'0')}</td>
+      <td class="td-name" data-editable>${a.name}</td>
+      <td class="td-handle">${a.handle}</td>
+      <td class="td-followers">${a.followers}</td>
+      <td class="td-fee confirmed" style="text-align:right;" data-editable>${fmt(a.fee)}</td>
+      <td class="td-status" style="text-align:right;font-size:11px;">
+        <span class="status-dot dot-${a.status}"></span>${a.status}
+      </td>
+    </tr>
+  `).join('') + `
+    <tr class="total-row">
+      <td></td>
+      <td class="td-name">Total Booking</td>
+      <td></td>
+      <td class="td-followers">22 artists</td>
+      <td class="td-fee" style="text-align:right;">${fmt(totalFee)}</td>
+      <td></td>
+    </tr>
+  `;
+
+  // update summary
+  document.getElementById('sumBooking').textContent = fmt(totalFee);
+  document.getElementById('sumBookingSub').innerHTML = '22 artists confirmed';
+
+  const mktTotal = budget.reduce((s,b)=>s+b.amount,0);
+  const grandTotal = totalFee + mktTotal + 7000; // photographer included in marketing but also here for clarity
+  document.getElementById('sumTotal').textContent = fmt(totalFee + mktTotal);
+  document.getElementById('sumTotalSub').innerHTML = 'Bookings + marketing';
+}
+
+function renderBudget(){
+  const list = document.getElementById('budgetList');
+  const total = budget.reduce((s,b)=>s+b.amount,0);
+  list.innerHTML = budget.map(b=>`
+    <div class="brow">
+      <div>
+        <div class="brow-label">${b.label}</div>
+        ${b.note?`<div class="brow-note">${b.note}</div>`:''}
+      </div>
+      <div class="brow-amount" data-editable>${fmt(b.amount)}</div>
+    </div>
+  `).join('');
+  document.getElementById('budgetTotalVal').textContent = fmt(total);
+  document.getElementById('mktBadge').textContent = fmt(total);
+  document.getElementById('sumMarketing').textContent = fmt(total);
+}
+
+function renderOutstanding(){
+  document.getElementById('outstandingContainer').innerHTML = outstanding.map(o=>`
+    <div class="oitem">
+      <span class="olabel">${o.label}</span>
+      <span class="${o.status==='done'?'odone':o.status==='ready'?'oready':'opend'}">
+        ${o.status==='done'?'✓ Done':o.status==='ready'?'Ready':'Pending'}
+      </span>
+    </div>
+  `).join('');
+}
+
+// ── HOLD TO EDIT ─────────────────────────────────────────────────────────────
+let holdTimer=null,holding=false,editMode=false;
+const holdBtn=document.getElementById('holdBtn');
+const holdRing=document.getElementById('holdRing');
+const holdLabel=document.getElementById('holdLabel');
+const HOLD=800;
+
+function startHold(){
+  holding=true;
+  holdRing.style.transition=`transform ${HOLD}ms linear,opacity ${HOLD}ms linear`;
+  holdRing.style.transform='scale(1)';holdRing.style.opacity='1';
+  holdTimer=setTimeout(()=>{if(holding)toggleEdit();},HOLD);
+}
+function endHold(){
+  holding=false;clearTimeout(holdTimer);
+  if(!editMode){
+    holdRing.style.transition='transform .2s,opacity .2s';
+    holdRing.style.transform='scale(0)';holdRing.style.opacity='0';
+  }
+}
+function toggleEdit(){
+  editMode=!editMode;
+  holdRing.style.transition='transform .2s,opacity .2s';
+  holdRing.style.transform='scale(0)';holdRing.style.opacity='0';
+  if(editMode){
+    holdBtn.classList.add('hold-active');holdLabel.textContent='Editing';
+    document.querySelectorAll('[data-editable]').forEach(el=>{
+      el.contentEditable='true';
+      el.style.outline='2px solid var(--gold)';el.style.borderRadius='3px';
+      el.style.padding='1px 4px';el.style.background='rgba(201,168,0,0.05)';
+    });
+  } else {
+    holdBtn.classList.remove('hold-active');holdLabel.textContent='Hold to Edit';
+    document.querySelectorAll('[data-editable]').forEach(el=>{
+      el.contentEditable='false';
+      el.style.outline='';el.style.padding='';el.style.background='';
+    });
+  }
+}
+holdBtn.addEventListener('mousedown',startHold);
+holdBtn.addEventListener('touchstart',e=>{e.preventDefault();startHold();},{passive:false});
+holdBtn.addEventListener('mouseup',endHold);
+holdBtn.addEventListener('mouseleave',endHold);
+holdBtn.addEventListener('touchend',endHold);
+holdBtn.addEventListener('touchcancel',endHold);
+
+// ── TILT ─────────────────────────────────────────────────────────────────────
+function initTilt(){
+  document.querySelectorAll('.card').forEach(c=>{
+    c.addEventListener('mousemove',e=>{
+      const r=c.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width-0.5;
+      const y=(e.clientY-r.top)/r.height-0.5;
+      c.style.transform=`perspective(900px) rotateY(${x*5}deg) rotateX(${-y*5}deg) translateZ(5px)`;
+    });
+    c.addEventListener('mouseleave',()=>{c.style.transform='';});
+  });
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+renderArtists();
+renderBudget();
+renderOutstanding();
+initTilt();
+document.getElementById('footerDate').textContent=new Date().toLocaleString('en-ZA',{month:'long',year:'numeric'});
+</script>
+</body>
+</html>

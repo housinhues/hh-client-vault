@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SuperFly × MTN · Pitch Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#f5f5f2;
+  --bg2:#eeede9;
+  --surface:#ffffff;
+  --surface2:#f7f6f2;
+  --surface3:#eeede9;
+  --border:#e0ddd6;
+  --border2:#d4d0c8;
+  --border3:#c8c4ba;
+  --gold:#c9a800;
+  --gold2:#e8c200;
+  --gold-dim:#8a7200;
+  --gold-glow:rgba(201,168,0,0.12);
+  --gold-glow2:rgba(201,168,0,0.05);
+  --text:#1a1916;
+  --text-mid:#5a5850;
+  --text-dim:#9a9890;
+  --green:#2d8a3e;
+  --amber:#b87010;
+  --blue-glow:rgba(60,80,200,0.04);
+  --shadow-deep:0 32px 80px rgba(0,0,0,0.12),0 8px 20px rgba(0,0,0,0.08);
+  --shadow-card:0 8px 32px rgba(0,0,0,0.08),0 2px 8px rgba(0,0,0,0.05),inset 0 1px 0 rgba(255,255,255,0.9);
+  --shadow-gold:0 0 40px rgba(201,168,0,0.1),0 0 80px rgba(201,168,0,0.05);
+}
+
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── AMBIENT BACKGROUND ── */
+.bg-glow{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 800px 500px at 20% 10%, rgba(201,168,0,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 600px 400px at 80% 80%, rgba(60,80,200,0.03) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 300px at 60% 30%, rgba(201,168,0,0.04) 0%, transparent 70%);
+}
+.bg-grid{
+  position:fixed;inset:0;pointer-events:none;z-index:0;opacity:1;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+  background-size:60px 60px;
+}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 48px;
+  background:rgba(245,245,242,0.92);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border2);
+  box-shadow:0 1px 0 rgba(201,168,0,0.15), 0 4px 20px rgba(0,0,0,0.06);
+}
+.brand-wrap{display:flex;align-items:center;gap:16px;}
+.brand{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:22px;letter-spacing:0.1em;color:var(--text);
+}
+.brand .x{
+  color:var(--gold);
+  text-shadow:0 0 12px rgba(201,168,0,0.3);
+}
+.brand-sub{
+  font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--text-dim);border-left:1px solid var(--border2);padding-left:16px;
+}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.pill{
+  font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+  padding:6px 16px;border-radius:3px;cursor:default;
+}
+.pill-gold{
+  background:var(--gold);color:#000;
+  box-shadow:0 2px 12px rgba(201,168,0,0.25);
+}
+.pill-ghost{
+  background:transparent;color:var(--text-mid);
+  border:1px solid var(--border3);cursor:pointer;
+  transition:all .2s;
+}
+.pill-ghost:hover{border-color:var(--gold);color:var(--gold);box-shadow:0 2px 8px rgba(201,168,0,0.1);}
+
+/* ── HERO ── */
+.hero{
+  position:relative;z-index:1;
+  padding:72px 48px 64px;
+  border-bottom:1px solid var(--border2);
+  display:grid;grid-template-columns:1fr auto;gap:48px;align-items:end;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 1200px 600px at 50% -20%, rgba(201,168,0,0.06) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-eye{
+  font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
+}
+.hero-eye::before{
+  content:'';width:32px;height:1px;background:var(--gold);
+  display:block;
+}
+.hero-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(56px,8vw,108px);
+  line-height:0.88;letter-spacing:0.015em;
+  color:var(--text);
+  text-shadow:0 4px 40px rgba(0,0,0,0.5);
+  position:relative;
+}
+.hero-title .line-gold{
+  color:transparent;
+  -webkit-text-stroke:2px var(--gold);
+  filter:drop-shadow(0 0 10px rgba(201,168,0,0.2));
+}
+.hero-title .line-fill{
+  color:var(--gold);
+  text-shadow:none;
+}
+.hero-sub{
+  margin-top:24px;font-size:14px;color:var(--text-mid);
+  max-width:560px;line-height:1.8;
+}
+.hero-quote{
+  margin-top:28px;position:relative;
+  border-left:2px solid var(--gold);padding:14px 20px;
+  font-size:13px;font-style:italic;color:var(--text-mid);line-height:1.7;
+  max-width:540px;
+  background:linear-gradient(90deg, rgba(245,200,0,0.05) 0%, transparent 100%);
+  border-radius:0 4px 4px 0;
+}
+.hero-quote::before{
+  content:'';position:absolute;left:-1px;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg, var(--gold) 0%, transparent 100%);
+}
+.hero-quote cite{
+  display:block;margin-top:10px;font-style:normal;
+  font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold-dim);
+}
+
+.hero-stats{
+  display:flex;flex-direction:column;gap:6px;
+  perspective:1000px;
+}
+.h-stat-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:20px 28px;
+  text-align:right;
+  position:relative;
+  overflow:hidden;
+  transition:transform .3s ease, box-shadow .3s ease;
+  transform-style:preserve-3d;
+  box-shadow:var(--shadow-card);
+  cursor:default;
+}
+.h-stat-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg, rgba(0,0,0,0.02) 0%, transparent 60%);
+  border-radius:8px;pointer-events:none;
+}
+.h-stat-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(245,200,0,0.3), transparent);
+}
+.h-stat-card:hover{
+  transform:translateY(-3px) rotateY(-3deg) rotateX(2deg);
+  box-shadow:0 32px 80px rgba(0,0,0,0.6),0 0 30px rgba(245,200,0,0.08),inset 0 1px 0 rgba(0,0,0,0.05);
+}
+.h-stat-val{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:44px;line-height:1;color:#fff;letter-spacing:0.02em;
+}
+.h-stat-val .accent{
+  color:var(--gold);
+  text-shadow:0 0 20px rgba(245,200,0,0.5);
+}
+.h-stat-lbl{
+  font-size:9px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--text-dim);margin-top:6px;
+}
+
+/* ── MAIN GRID ── */
+.main{
+  position:relative;z-index:1;
+  padding:32px 48px;
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:16px;
+}
+.s3{grid-column:span 3;}
+.s4{grid-column:span 4;}
+.s5{grid-column:span 5;}
+.s6{grid-column:span 6;}
+.s7{grid-column:span 7;}
+.s8{grid-column:span 8;}
+.s12{grid-column:span 12;}
+
+/* ── 3D CARD ── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:12px;
+  padding:24px 26px;
+  position:relative;
+  overflow:hidden;
+  transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  transform-style:preserve-3d;
+  box-shadow:var(--shadow-card);
+}
+.card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 50%);
+  border-radius:12px;pointer-events:none;z-index:0;
+}
+.card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+  border-radius:12px 12px 0 0;
+}
+.card:hover{
+  border-color:var(--border3);
+  box-shadow:0 40px 100px rgba(0,0,0,0.7),0 0 40px rgba(245,200,0,0.06),inset 0 1px 0 rgba(0,0,0,0.04);
+}
+.card-inner{position:relative;z-index:1;}
+.card-gold-accent{
+  border-top:2px solid var(--gold);
+  box-shadow:0 -2px 12px rgba(201,168,0,0.1);
+}
+.card-gold-accent::after{
+  background:linear-gradient(90deg, transparent 0%, rgba(201,168,0,0.3) 50%, transparent 100%);
+}
+
+/* ── CARD LABEL ── */
+.clabel{
+  font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--text-dim);margin-bottom:20px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.cbadge{
+  font-size:9px;padding:3px 10px;border-radius:3px;
+  background:var(--surface2);color:var(--text-mid);
+  border:1px solid var(--border2);letter-spacing:0.03em;
+  text-transform:none;font-weight:500;
+  box-shadow:none;
+}
+
+/* ── DETAIL ROWS ── */
+.dsec{
+  font-size:8px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--gold-dim);padding:10px 0 6px;border-bottom:1px solid var(--border);
+}
+.drow{
+  display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:8px 0;border-bottom:1px solid var(--border);font-size:12.5px;
+}
+.drow:last-child{border-bottom:none;}
+.dkey{color:var(--text-dim);}
+.dval{color:var(--text);text-align:right;font-weight:500;}
+
+/* ── BIG METRIC ── */
+.mbig{
+  font-family:'Bebas Neue',sans-serif;font-size:64px;
+  color:var(--gold);line-height:1;letter-spacing:0.02em;
+  text-shadow:0 0 20px rgba(201,168,0,0.15);
+}
+.mdesc{font-size:13px;color:var(--text-mid);margin-top:8px;line-height:1.6;}
+.div{border:none;border-top:1px solid var(--border);margin:16px 0;}
+.mrow{display:flex;gap:20px;flex-wrap:wrap;margin-top:6px;}
+.mi .v{
+  font-family:'Bebas Neue',sans-serif;font-size:28px;
+  color:#fff;line-height:1;letter-spacing:0.02em;
+}
+.mi .l{
+  font-size:9px;color:var(--text-dim);text-transform:uppercase;
+  letter-spacing:0.1em;margin-top:4px;
+}
+.fnote{
+  font-size:11px;color:var(--text-dim);
+  display:flex;justify-content:space-between;
+}
+.fnote strong{color:var(--gold);}
+.confirm-box{
+  margin-top:14px;background:var(--surface2);border-radius:6px;
+  padding:12px 16px;font-size:12px;color:var(--text-mid);line-height:2;
+  border:1px solid var(--border);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.8);
+}
+.confirm-box span{color:var(--green);}
+
+/* ── TIERS ── */
+.tiers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;}
+.tier{border-radius:8px;padding:20px;position:relative;overflow:hidden;transition:transform .2s, box-shadow .2s;}
+.tier::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg, rgba(0,0,0,0.03) 0%, transparent 60%);
+  pointer-events:none;
+}
+.tier:hover{transform:translateY(-4px) scale(1.01);}
+.tier-static{
+  background:var(--surface2);border:1px solid var(--border2);
+  box-shadow:var(--shadow-card);
+}
+.tier-strategic{
+  background:var(--gold);border:1px solid var(--gold2);
+  box-shadow:0 8px 30px rgba(201,168,0,0.2),0 0 40px rgba(201,168,0,0.08),var(--shadow-card);
+}
+.tier-eye{font-size:8px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:10px;}
+.tier-static .tier-eye{color:var(--text-dim);}
+.tier-strategic .tier-eye{color:rgba(0,0,0,0.5);}
+.tier-price{font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;letter-spacing:0.02em;}
+.tier-static .tier-price{color:var(--text);}
+.tier-strategic .tier-price{color:#000;}
+.tier-tag{font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin:12px 0 8px;}
+.tier-static .tier-tag{color:var(--text-dim);}
+.tier-strategic .tier-tag{color:rgba(0,0,0,0.5);}
+.tier-items{font-size:11.5px;line-height:2.1;}
+.tier-static .tier-items{color:var(--text-mid);}
+.tier-strategic .tier-items{color:rgba(0,0,0,0.7);}
+
+/* ── ARTIST TABLE ── */
+.twrap{overflow-x:auto;margin-top:4px;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+thead th{
+  text-align:left;font-size:9px;font-weight:700;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--text-dim);
+  padding:8px 0 10px;border-bottom:1px solid var(--border2);
+}
+tbody td{
+  padding:11px 16px 11px 0;border-bottom:1px solid var(--border);
+  vertical-align:middle;color:var(--text-mid);
+  transition:color .15s;
+}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr{transition:background .15s;}
+tbody tr:hover td{color:var(--text);}
+tbody tr:hover{background:rgba(245,200,0,0.02);}
+.td-n{font-weight:600;color:var(--text);white-space:nowrap;}
+.td-h{color:var(--text-dim);font-size:11px;}
+.td-f{
+  font-family:'Bebas Neue',sans-serif;font-size:17px;
+  letter-spacing:0.04em;color:var(--text);white-space:nowrap;
+}
+.td-f.mega{
+  color:var(--gold);
+  text-shadow:0 0 10px rgba(201,168,0,0.2);
+}
+.td-note{font-size:11px;color:var(--text-dim);}
+.total-row td{
+  border-top:1px solid var(--border3)!important;
+  padding-top:14px!important;
+}
+.total-row .td-n{color:var(--gold);}
+.total-row .td-f{color:var(--gold);font-size:20px;text-shadow:none;}
+
+/* ── POINTS ── */
+.point{
+  display:flex;gap:16px;padding:14px 0;
+  border-bottom:1px solid var(--border);align-items:flex-start;
+  transition:background .15s;
+}
+.point:last-child{border-bottom:none;}
+.pnum{
+  font-family:'Bebas Neue',sans-serif;font-size:20px;
+  color:var(--gold);min-width:22px;line-height:1;
+  text-shadow:none;
+}
+.pbody{font-size:12.5px;line-height:1.65;color:var(--text-mid);}
+.pbody strong{color:var(--text);font-weight:600;display:block;margin-bottom:2px;}
+
+/* ── DECK SLIDES ── */
+.slide{
+  display:flex;align-items:center;gap:14px;
+  padding:10px 0;border-bottom:1px solid var(--border);
+  transition:background .15s, padding-left .15s;
+}
+.slide:last-child{border-bottom:none;}
+.slide:hover{padding-left:4px;}
+.sn{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--gold);min-width:24px;}
+.st{font-size:12.5px;font-weight:600;color:var(--text);flex:1;}
+.sd{font-size:11px;color:var(--text-dim);max-width:190px;text-align:right;}
+
+/* ── OUTSTANDING ── */
+.oitem{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:10px 0;border-bottom:1px solid var(--border);font-size:12.5px;
+}
+.oitem:last-child{border-bottom:none;}
+.olabel{color:var(--text-mid);}
+.opend{
+  color:var(--amber);font-weight:700;font-size:10px;
+  text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;
+}
+.odone{
+  color:var(--green);font-weight:700;font-size:10px;
+  text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;
+}
+
+/* ── PHRASE ── */
+.phrase{
+  background:var(--surface2);
+  border-left:2px solid var(--gold);
+  border-radius:0 6px 6px 0;
+  padding:18px 22px;
+  font-size:13.5px;line-height:1.8;
+  color:var(--text-mid);font-style:italic;margin-top:12px;
+  box-shadow:4px 0 20px rgba(201,168,0,0.05);
+  position:relative;overflow:hidden;
+}
+.phrase::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--gold),transparent);
+}
+.phrase-cta{
+  margin-top:12px;font-size:11px;color:var(--text-dim);text-align:right;
+}
+.phrase-cta span{color:var(--gold);}
+
+/* ── 3D FLOAT ANIMATION ── */
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-6px);}
+}
+@keyframes glow-pulse{
+  0%,100%{opacity:0.6;}
+  50%{opacity:1;}
+}
+.float-anim{animation:float 6s ease-in-out infinite;}
+.float-anim:nth-child(2){animation-delay:1.5s;}
+.float-anim:nth-child(3){animation-delay:3s;}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:1;
+  border-top:1px solid var(--border2);
+  padding:20px 48px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:11px;color:var(--text-dim);letter-spacing:0.06em;
+  background:var(--surface);
+}
+footer span{color:var(--gold);}
+
+/* ── MODAL ── */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(200,200,195,0.7);z-index:200;
+  justify-content:center;align-items:center;backdrop-filter:blur(20px);
+}
+.overlay.active{display:flex;}
+.modal{
+  background:var(--surface);
+  border:1px solid var(--border3);
+  border-radius:12px;
+  width:min(640px,95vw);max-height:90vh;overflow-y:auto;padding:36px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.15),0 0 30px rgba(201,168,0,0.06);
+  position:relative;
+}
+.modal::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,0,0.4),transparent);
+}
+.mhead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;}
+.mhead h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.05em;color:#fff;}
+.mhead button{background:none;border:none;color:var(--text-dim);font-size:26px;cursor:pointer;line-height:1;transition:color .15s;}
+.mhead button:hover{color:#fff;}
+.modal label{
+  display:block;font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--text-dim);margin-top:18px;margin-bottom:6px;
+}
+.modal input,.modal textarea{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:6px;padding:11px 14px;color:var(--text);font-size:13px;
+  font-family:'Inter',sans-serif;resize:vertical;transition:border-color .15s;
+}
+.modal input:focus,.modal textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,200,0,0.08);}
+.mfooter{display:flex;gap:10px;justify-content:flex-end;margin-top:28px;}
+.btn{padding:10px 26px;border-radius:5px;font-size:12px;font-weight:700;border:none;cursor:pointer;transition:all .15s;letter-spacing:0.06em;text-transform:uppercase;}
+.btn-y{background:var(--gold);color:#000;box-shadow:0 2px 12px rgba(201,168,0,0.2);}
+.btn-y:hover{background:var(--gold2);box-shadow:0 4px 16px rgba(201,168,0,0.3);}
+.btn-g{background:var(--surface2);color:var(--text-mid);border:1px solid var(--border2);}
+.btn-g:hover{color:var(--text);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  .s3,.s4,.s5,.s6,.s7,.s8{grid-column:span 12;}
+  .hero{grid-template-columns:1fr;gap:32px;}
+  .hero-stats{flex-direction:row;flex-wrap:wrap;gap:10px;}
+  .h-stat-card{flex:1;min-width:140px;text-align:left;}
+  .h-stat-val{font-size:34px;}
+}
+@media(max-width:700px){
+  .topbar,.hero,.main,footer{padding-left:20px;padding-right:20px;}
+  .hero{padding-top:40px;padding-bottom:36px;}
+  .sd,.td-note{display:none;}
+  .tiers{grid-template-columns:1fr;}
+}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border3);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--gold-dim);}
+
+/* ── HOLD TO EDIT ── */
+.pill-hold{
+  background:transparent;color:var(--text-mid);
+  border:1px solid var(--border3);cursor:pointer;
+  transition:all .2s;
+  position:relative;overflow:hidden;
+  min-width:120px;
+}
+.pill-hold:hover{border-color:var(--gold);color:var(--gold);}
+.hold-label{position:relative;z-index:2;pointer-events:none;}
+.hold-ring{
+  position:absolute;inset:0;border-radius:3px;
+  background:var(--gold);z-index:1;
+  transform:scale(0);opacity:0;transform-origin:left center;
+}
+.hold-active{
+  background:var(--gold)!important;
+  color:#000!important;
+  border-color:var(--gold)!important;
+  box-shadow:0 2px 12px rgba(201,168,0,0.25);
+}
+[data-editable]:focus{
+  outline:2px solid var(--gold)!important;
+  border-radius:3px;
+}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="bg-grid"></div>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="brand-wrap">
+    <div class="brand">SuperFly <span class="x">×</span> MTN</div>
+    <div class="brand-sub">Pitch Dashboard · Sep 2026</div>
+  </div>
+  <div class="topbar-right">
+    <span class="pill pill-gold">Title Partner · R50k</span>
+    <button class="pill pill-hold" id="holdBtn" title="Hold to edit">
+      <span class="hold-label" id="holdLabel">Hold to Edit</span>
+      <span class="hold-ring" id="holdRing"></span>
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-eye">Free State · September 2026 · NEWLEAGUE × SuperFly × Housing Hues</div>
+    <div class="hero-title">
+      <div>The Next</div>
+      <div class="line-gold">Chapter</div>
+      <div class="line-fill">of Culture.</div>
+    </div>
+    <p class="hero-sub">Built on proof, not promises. The June 16 campaign proved the power of this collective. SuperFly is the scale-up of what MTN and NEWLEAGUE already built together.</p>
+    <div class="hero-quote">
+      "Listening to young people is the best idea that society can make — they are always on the pulse."
+      <cite>— Zoë Modiga · MTN × NEWLEAGUE June 16 Campaign</cite>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="h-stat-card float-anim">
+      <div class="h-stat-val"><span class="accent">3.98</span>M+</div>
+      <div class="h-stat-lbl">Combined Instagram Reach</div>
+    </div>
+    <div class="h-stat-card float-anim">
+      <div class="h-stat-val"><span class="accent">40k</span>+</div>
+      <div class="h-stat-lbl">Physical Student Touchpoints</div>
+    </div>
+    <div class="h-stat-card float-anim">
+      <div class="h-stat-val"><span class="accent">R1.25</span></div>
+      <div class="h-stat-lbl">Cost Per Student</div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- Locked Details -->
+  <div class="card s4">
+    <div class="card-inner">
+      <div class="clabel">Locked Details <span class="cbadge">confirmed</span></div>
+      <div class="dsec">Sponsorship</div>
+      <div class="drow"><span class="dkey">Ask</span><span class="dval" data-editable id="dSponsorship">R50,000 — Title Partner</span></div>
+      <div class="dsec">Schedule</div>
+      <div class="drow"><span class="dkey">Main Event</span><span class="dval" data-editable id="dEventDate">Sat 6 Sept 2026</span></div>
+      <div class="drow"><span class="dkey">Campus 1</span><span class="dval" data-editable id="dCampus1">Thu 4 Sept — UFS</span></div>
+      <div class="drow"><span class="dkey">Campus 2</span><span class="dval" data-editable id="dCampus2">Fri 5 Sept — CUT</span></div>
+      <div class="drow"><span class="dkey">Studio Camp</span><span class="dval" data-editable id="dStudio">Mon 8 Sept</span></div>
+      <div class="dsec">Venue & Media</div>
+      <div class="drow"><span class="dkey">Venue</span><span class="dval" data-editable id="dVenue">Sandy's Bar, Willows, BFN</span></div>
+      <div class="drow"><span class="dkey">Capacity</span><span class="dval" data-editable>5,000</span></div>
+      <div class="drow"><span class="dkey">Media</span><span class="dval" data-editable id="dMedia">YFM + Slikour on Life</span></div>
+      <div class="drow"><span class="dkey">Event Type</span><span class="dval" data-editable>Paid · Independent</span></div>
+    </div>
+  </div>
+
+  <!-- Investment -->
+  <div class="card s4 card-gold-accent">
+    <div class="card-inner">
+      <div class="clabel">Investment</div>
+      <div class="mbig">R50,000</div>
+      <div class="mdesc">Title Partner — naming rights across all activations, media, and digital channels</div>
+      <div class="div"></div>
+      <div class="mrow">
+        <div class="mi"><div class="v">25k+</div><div class="l">UFS</div></div>
+        <div class="mi"><div class="v">10k+</div><div class="l">CUT</div></div>
+        <div class="mi"><div class="v">5,000</div><div class="l">Sandy's</div></div>
+      </div>
+      <div class="div"></div>
+      <div class="fnote">
+        <span>40,000+ physical touchpoints</span>
+        <span><strong>R1.25 / student</strong></span>
+      </div>
+      <div class="confirm-box">
+        <span>✓</span> Paid event · financially independent<br/>
+        <span>✓</span> VIP tier + category sponsors confirmed<br/>
+        <span>✓</span> 13 confirmed artists · growing roster
+      </div>
+    </div>
+  </div>
+
+  <!-- Partnership Tiers -->
+  <div class="card s4">
+    <div class="card-inner">
+      <div class="clabel">Partnership Tiers <span class="cbadge">slide 09</span></div>
+      <div class="tiers">
+        <div class="tier tier-static">
+          <div class="tier-eye">Static Presence</div>
+          <div class="tier-price">TBC</div>
+          <div class="tier-tag">Logo Placement</div>
+          <div class="tier-items">
+            · Campus stage branding<br/>
+            · Tour logo placement<br/>
+            · Social mentions
+          </div>
+        </div>
+        <div class="tier tier-strategic">
+          <div class="tier-eye">★ Recommended</div>
+          <div class="tier-price">R50k</div>
+          <div class="tier-tag">Title Partner</div>
+          <div class="tier-items">
+            · Full naming rights<br/>
+            · Artist interview integration<br/>
+            · MTN Connect Zones<br/>
+            · Campus SIM drive<br/>
+            · Branded livestream
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Artist Roster -->
+  <div class="card s12">
+    <div class="card-inner">
+      <div class="clabel">Confirmed Artist Roster <span class="cbadge">13 artists · 3.98M+ combined reach</span></div>
+      <div class="twrap">
+        <table>
+          <thead>
+            <tr><th>Artist</th><th>Handle</th><th>Followers</th><th>Notes</th></tr>
+          </thead>
+          <tbody id="artistTbody"></tbody>
+        </table>
+      </div>
+      <div style="margin-top:14px;font-size:11px;color:var(--text-dim);padding-top:12px;border-top:1px solid var(--border);">
+        + Additional artists in advanced discussions — announced progressively as partnerships are formalised.
+      </div>
+    </div>
+  </div>
+
+  <!-- Selling Points -->
+  <div class="card s6">
+    <div class="card-inner">
+      <div class="clabel">5 Key Selling Points <span class="cbadge">pitch narrative</span></div>
+      <div id="pointsContainer"></div>
+    </div>
+  </div>
+
+  <!-- Deck Structure -->
+  <div class="card s6">
+    <div class="card-inner">
+      <div class="clabel">Deck Structure <span class="cbadge">10 slides</span></div>
+      <div id="deckContainer"></div>
+    </div>
+  </div>
+
+  <!-- Outstanding -->
+  <div class="card s4">
+    <div class="card-inner">
+      <div class="clabel">Still Outstanding</div>
+      <div id="outstandingContainer"></div>
+    </div>
+  </div>
+
+  <!-- Key Phrase -->
+  <div class="card s8">
+    <div class="card-inner">
+      <div class="clabel">Boilerplate — Pending Artists</div>
+      <div class="phrase" id="phraseDisplay" data-editable>
+        "The confirmed roster of 13 artists represents the foundation of the SuperFly lineup. Additional artists are currently in advanced discussions and will be announced progressively as partnership commitments are formalised."
+      </div>
+      <div class="phrase-cta"><span>→</span> Over-attract, don't over-sell.</div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div>Prepared by <span>Housing Hues</span> · Creative &amp; Operational Agency</div>
+  <div id="footerTime">June 2026 · Confidential</div>
+</footer>
+
+    <label>Sponsorship Ask</label>
+    <input id="mSponsorship" value="R50,000 — Title Partner"/>
+    <label>Main Event Date</label>
+    <input id="mEventDate" value="Sat 6 Sept 2026"/>
+    <label>Venue</label>
+    <input id="mVenue" value="Sandy's Bar, Willows, Bloemfontein"/>
+    <label>Campus 1</label>
+    <input id="mCampus1" value="Thu 4 Sept — UFS"/>
+    <label>Campus 2</label>
+    <input id="mCampus2" value="Fri 5 Sept — CUT"/>
+    <label>Studio Camp</label>
+    <input id="mStudio" value="Mon 8 Sept"/>
+    <label>Media Partners</label>
+    <input id="mMedia" value="YFM + Slikour on Life"/>
+    <label>Boilerplate Phrase</label>
+    <textarea id="mPhrase" rows="4">"The confirmed roster of 13 artists represents the foundation of the SuperFly lineup. Additional artists are currently in advanced discussions and will be announced progressively as partnership commitments are formalised."</textarea>
+    <div class="mfooter">
+      <button class="btn btn-g" id="cancelModal">Cancel</button>
+      <button class="btn btn-y" id="saveModal">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const artists=[
+  {name:'Mr JazziQ',    handle:'@mrjazziq',        followers:'2,000,000', note:'Amapiano pioneer · SAMA winner · Black is Brown label', mega:true},
+  {name:'Blxckie',      handle:'@blxckie_',         followers:'1,000,000', note:"SA's premier hip hop artist", mega:true},
+  {name:'Sonwabile',    handle:'@sonwabile__x',      followers:'321,075',   note:'2.53% engagement rate'},
+  {name:'Saudi',        handle:'@saudi_rsa',         followers:'278,000',   note:'MSOTRA DON\'T DIE'},
+  {name:'Roii',         handle:'@1roiii',            followers:'97,080',    note:'Multi-award winner · YFM Radio presenter'},
+  {name:'031 Choppa',   handle:'@031choppa',         followers:'109,000',   note:'Platinum-selling · award-winning producer'},
+  {name:'LaCabra',      handle:'@_lacabra.ww',       followers:'61,132',    note:'21.36% engagement rate'},
+  {name:'Issi',         handle:'@sastii_sa_',        followers:'30,480',    note:'Avg 4,143 likes per post'},
+  {name:'Flow Jones Jr.',handle:'@flowjones_jr',     followers:'29,788',    note:'Featured in major SA campaigns'},
+  {name:'HeMustBeFabulous',handle:'@hemustbefabulous',followers:'22,660',  note:'17.27% ER · Universal Music'},
+  {name:'BantuNots',    handle:'@bantu.nots',        followers:'15,786',    note:'Diba Dance collab'},
+  {name:'Skatle',       handle:'@skatle____',        followers:'8,613',     note:'23.03% ER · Back to the City Festival'},
+  {name:'DJY Lozii',    handle:'@djylozii',          followers:'7,728',     note:'Operational anchor · Amapiano/House scene'},
+];
+
+const points=[
+  {title:'Lead with the Relationship',body:'MTN x NEWLEAGUE June 16 campaign — round table and original track. This is a follow-up, not an introduction. MTN already said yes.'},
+  {title:'Sell the Ecosystem',body:'13 confirmed artists. 3.98M+ combined Instagram reach. The ecosystem is the headline — not any single act.'},
+  {title:'Make MTN the Connector',body:'Every artist interview has a dedicated connectivity moment. MTN is positioned as the solution — organically, in voices the youth trust.'},
+  {title:'The FOMO Arc',body:'Thursday and Friday campus activations build anticipation. Sandy\'s on Saturday is the payoff. MTN is present at every stage.'},
+  {title:'Unbeatable Value',body:'R50,000. 40,000+ physical touchpoints. R1.25 per student. Two national media partners. No national campaign gets close.'},
+];
+
+const slides=[
+  {n:'01',t:'Cover',d:'SuperFly leads. Commands the room.'},
+  {n:'02',t:'The Relationship',d:'June 16 campaign. Proof of trust.'},
+  {n:'03',t:'The Opportunity',d:'Free State. Underserved. MTN owns it.'},
+  {n:'04',t:'The Artist Ecosystem',d:'13 artists. 3.98M+ reach.'},
+  {n:'05',t:'The Activation Journey',d:'Thu → Fri → Sat → Mon arc.'},
+  {n:'06',t:'The Numbers',d:'R1.25/student. 40k touchpoints.'},
+  {n:'07',t:'Media & Amplification',d:'YFM. Slikour. Campus radio.'},
+  {n:'08',t:'MTN Integration',d:'Not a logo. The answer.'},
+  {n:'09',t:'Partnership Investment',d:'R50k Title Partner. Line by line.'},
+  {n:'10',t:'The Close',d:'One ask. Next chapter.'},
+];
+
+const outstanding=[
+  {label:'Radio station reach figures',status:'pending'},
+  {label:'VIP sponsor category names',status:'pending'},
+  {label:'SuperFly logo (hi-res)',status:'pending'},
+  {label:'MTN logo (hi-res)',status:'pending'},
+  {label:'Deck rebuild — 13 artist roster',status:'ready'},
+  {label:'Attendance estimate confirmed',status:'done'},
+  {label:'Artist roster locked',status:'done'},
+];
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderArtists(){
+  const tb=document.getElementById('artistTbody');
+  tb.innerHTML=artists.map(a=>`
+    <tr>
+      <td class="td-n">${a.name}</td>
+      <td class="td-h">${a.handle}</td>
+      <td class="td-f${a.mega?' mega':''}">${a.followers}</td>
+      <td class="td-note">${a.note}</td>
+    </tr>
+  `).join('')+`
+    <tr class="total-row">
+      <td class="td-n">Combined Reach</td>
+      <td class="td-h">13 artists</td>
+      <td class="td-f">3,981,342+</td>
+      <td class="td-note">Instagram followers · growing</td>
+    </tr>
+  `;
+}
+
+function renderPoints(){
+  const c=document.getElementById('pointsContainer');
+  c.innerHTML=points.map((p,i)=>`
+    <div class="point">
+      <div class="pnum">${String(i+1).padStart(2,'0')}</div>
+      <div class="pbody"><strong>${p.title}</strong>${p.body}</div>
+    </div>
+  `).join('');
+}
+
+function renderSlides(){
+  const c=document.getElementById('deckContainer');
+  c.innerHTML=slides.map(s=>`
+    <div class="slide">
+      <div class="sn">${s.n}</div>
+      <div class="st">${s.t}</div>
+      <div class="sd">${s.d}</div>
+    </div>
+  `).join('');
+}
+
+function renderOutstanding(){
+  const c=document.getElementById('outstandingContainer');
+  c.innerHTML=outstanding.map(o=>`
+    <div class="oitem">
+      <span class="olabel">${o.label}</span>
+      <span class="${o.status==='done'?'odone':o.status==='ready'?'odone':'opend'}">
+        ${o.status==='done'?'✓ Done':o.status==='ready'?'Ready':'Pending'}
+      </span>
+    </div>
+  `).join('');
+}
+
+// ── 3D CARD TILT ─────────────────────────────────────────────────────────────
+function initTilt(){
+  document.querySelectorAll('.card,.h-stat-card').forEach(card=>{
+    card.addEventListener('mousemove',e=>{
+      const r=card.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width-0.5;
+      const y=(e.clientY-r.top)/r.height-0.5;
+      card.style.transform=`perspective(800px) rotateY(${x*8}deg) rotateX(${-y*8}deg) translateZ(8px)`;
+    });
+    card.addEventListener('mouseleave',()=>{
+      card.style.transform='perspective(800px) rotateY(0deg) rotateX(0deg) translateZ(0)';
+    });
+  });
+}
+
+// ── HOLD TO EDIT ──────────────────────────────────────────────────────────────
+let holdTimer=null;
+let holding=false;
+let editMode=false;
+const holdBtn=document.getElementById('holdBtn');
+const holdRing=document.getElementById('holdRing');
+const holdLabel=document.getElementById('holdLabel');
+const HOLD_MS=800;
+
+function startHold(){
+  holding=true;
+  holdRing.style.transition=`transform ${HOLD_MS}ms linear, opacity ${HOLD_MS}ms linear`;
+  holdRing.style.transform='scale(1)';
+  holdRing.style.opacity='1';
+  holdTimer=setTimeout(()=>{
+    if(holding) toggleEditMode();
+  },HOLD_MS);
+}
+
+function endHold(){
+  holding=false;
+  clearTimeout(holdTimer);
+  if(!editMode){
+    holdRing.style.transition='transform 0.2s ease, opacity 0.2s ease';
+    holdRing.style.transform='scale(0)';
+    holdRing.style.opacity='0';
+  }
+}
+
+function toggleEditMode(){
+  editMode=!editMode;
+  holdRing.style.transition='transform 0.2s ease, opacity 0.2s ease';
+  holdRing.style.transform='scale(0)';
+  holdRing.style.opacity='0';
+
+  if(editMode){
+    holdBtn.classList.add('hold-active');
+    holdLabel.textContent='Editing';
+    document.querySelectorAll('[data-editable]').forEach(el=>{
+      el.contentEditable='true';
+      el.classList.add('editable-active');
+    });
+    // Flash all editable fields
+    document.querySelectorAll('[data-editable]').forEach(el=>{
+      el.style.outline='2px solid var(--gold)';
+      el.style.borderRadius='3px';
+      el.style.padding='1px 4px';
+      el.style.background='rgba(201,168,0,0.06)';
+    });
+  } else {
+    holdBtn.classList.remove('hold-active');
+    holdLabel.textContent='Hold to Edit';
+    document.querySelectorAll('[data-editable]').forEach(el=>{
+      el.contentEditable='false';
+      el.classList.remove('editable-active');
+      el.style.outline='none';
+      el.style.padding='';
+      el.style.background='';
+    });
+  }
+}
+
+// Touch & mouse support
+holdBtn.addEventListener('mousedown', startHold);
+holdBtn.addEventListener('touchstart', e=>{e.preventDefault();startHold();},{passive:false});
+holdBtn.addEventListener('mouseup', endHold);
+holdBtn.addEventListener('mouseleave', endHold);
+holdBtn.addEventListener('touchend', endHold);
+holdBtn.addEventListener('touchcancel', endHold);
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+renderArtists();
+renderPoints();
+renderSlides();
+renderOutstanding();
+initTilt();
+</script>
+</body>
+</html>

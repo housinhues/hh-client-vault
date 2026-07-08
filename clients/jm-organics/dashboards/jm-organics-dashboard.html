@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>J&M Organics · Director Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --green-primary: #1a5c38;
+      --green-light: #2d8a56;
+      --green-pale: #e8f5ee;
+      --accent: #e07b39;
+      --gold: #c9a03d;
+      --border: #e2e8e0;
+      --card-shadow: 0 8px 20px rgba(0,0,0,0.02), 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f7f2;
+      color: #1a2e1f;
+      min-height: 100vh;
+    }
+
+    .dashboard-wrapper {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 28px 32px;
+    }
+
+    /* HEADER */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-bottom: 36px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 20px;
+    }
+    .logo-area { display: flex; align-items: center; gap: 14px; }
+    .logo-icon {
+      background: var(--green-primary);
+      width: 48px; height: 48px;
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.7rem;
+      box-shadow: 0 4px 14px rgba(26,92,56,0.25);
+    }
+    .logo-text h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem; font-weight: 700;
+      color: #1c3b2a; letter-spacing: -0.3px;
+    }
+    .logo-text span { font-size: 0.72rem; font-weight: 500; color: #4a6a55; }
+    .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .date-badge {
+      background: white; padding: 9px 20px;
+      border-radius: 40px; border: 1px solid var(--border);
+      font-size: 0.85rem; font-weight: 500;
+      display: flex; align-items: center; gap: 8px;
+      box-shadow: var(--card-shadow);
+    }
+    .snapshot-tag {
+      font-size: 0.72rem; color: #5f7563;
+      background: var(--green-pale);
+      padding: 6px 14px; border-radius: 30px;
+      font-weight: 500;
+    }
+
+    /* KPI GRID */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+    .kpi-card {
+      background: white;
+      border-radius: 24px; padding: 22px 22px;
+      border: 1px solid var(--border);
+      box-shadow: var(--card-shadow);
+      transition: transform 0.18s, border-color 0.18s;
+    }
+    .kpi-card:hover { transform: translateY(-3px); border-color: var(--green-light); }
+    .kpi-card.highlight { background: var(--green-primary); border-color: var(--green-primary); }
+    .kpi-card.highlight .kpi-title { color: rgba(255,255,255,0.75); }
+    .kpi-card.highlight .kpi-number { color: #fff; }
+    .kpi-card.highlight .kpi-trend { background: rgba(255,255,255,0.15); color: #d4f5e2; }
+    .kpi-title {
+      font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 0.07em; font-weight: 600;
+      color: #5b6e5c; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .kpi-number {
+      font-size: 2.3rem; font-weight: 800;
+      color: var(--green-primary); line-height: 1.1;
+      margin-bottom: 8px; letter-spacing: -1px;
+    }
+    .kpi-trend {
+      font-size: 0.7rem; font-weight: 600;
+      color: #3b784e; background: var(--green-pale);
+      display: inline-block; padding: 3px 10px; border-radius: 30px;
+    }
+
+    /* LAYOUT ROWS */
+    .row-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    /* CARDS */
+    .card {
+      background: white; border-radius: 24px;
+      border: 1px solid var(--border); padding: 22px 24px;
+      box-shadow: var(--card-shadow);
+    }
+    .card h3 {
+      font-size: 1.05rem; font-weight: 700;
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 9px;
+      color: #1f2f24;
+      border-left: 3px solid var(--green-primary);
+      padding-left: 13px;
+      letter-spacing: -0.2px;
+    }
+    .card h3 i { color: var(--green-primary); font-size: 0.9em; }
+    .full-width { grid-column: span 2; }
+
+    /* TABLES */
+    .data-table {
+      width: 100%; border-collapse: collapse; font-size: 0.8rem;
+    }
+    .data-table th {
+      text-align: left; padding: 10px 8px 8px 0;
+      font-weight: 600; color: #3f5743;
+      border-bottom: 1.5px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 10px 8px 10px 0;
+      border-bottom: 1px solid #eff3ea;
+      font-weight: 500; vertical-align: middle;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover td { background: #fafcf9; }
+
+    .badge {
+      padding: 4px 10px; border-radius: 30px;
+      font-size: 0.68rem; font-weight: 700; display: inline-block;
+    }
+    .badge-green { background: var(--green-pale); color: var(--green-primary); }
+    .badge-amber { background: #fef5e6; color: #b96f1a; }
+    .badge-blue { background: #e8f0fe; color: #2c5eb5; }
+
+    .status-dot {
+      display: inline-flex; align-items: center; gap: 5px; font-weight: 500;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+    .dot-green { background: #2d8a56; }
+    .dot-amber { background: #e07b39; }
+    .dot-blue { background: #4a7fcb; }
+
+    /* PROGRESS BARS */
+    .progress-wrap { margin: 10px 0; }
+    .progress-label {
+      display: flex; justify-content: space-between;
+      font-size: 0.78rem; font-weight: 500; margin-bottom: 5px;
+      color: #2a3d2f;
+    }
+    .progress-bar {
+      background: #e2e9df; border-radius: 20px; height: 8px; overflow: hidden;
+    }
+    .progress-fill {
+      background: var(--green-primary); height: 8px; border-radius: 20px;
+      transition: width 0.8s ease;
+    }
+    .progress-fill.amber { background: var(--accent); }
+
+    /* STOCK WARNING */
+    .alert-box {
+      border-radius: 16px; padding: 12px 16px;
+      margin-bottom: 16px; display: flex; align-items: flex-start; gap: 10px;
+    }
+    .alert-box.warning { background: #fff6ed; border: 1px solid #fddbb4; }
+    .alert-box.info { background: var(--green-pale); border: 1px solid #c2dfcc; }
+    .alert-box i { margin-top: 2px; flex-shrink: 0; }
+    .alert-text { font-size: 0.8rem; line-height: 1.5; }
+    .alert-text strong { font-weight: 700; }
+
+    /* COMMISSION LIST */
+    .commission-list { list-style: none; }
+    .commission-list li {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 11px 0; border-bottom: 1px solid #eff3ea;
+      font-size: 0.82rem;
+    }
+    .commission-list li:last-child { border-bottom: none; }
+    .commission-list .label { display: flex; align-items: center; gap: 8px; color: #374d3c; }
+    .commission-list .amount { font-weight: 700; color: #1f2f24; }
+    .commission-list .amount.muted { color: #5b7060; font-weight: 500; }
+
+    /* PAYOUT ROWS */
+    .payout-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px; border-radius: 16px; margin-bottom: 10px;
+      background: #f5f8f4; font-size: 0.82rem;
+    }
+    .payout-row.featured { background: var(--green-pale); }
+    .payout-row.milestone {
+      background: linear-gradient(135deg, #fbf7e8, #fef3e0);
+      border: 1px dashed #deba6b;
+    }
+    .payout-row .amount { font-weight: 800; color: var(--green-primary); }
+
+    /* PACKAGE GRID */
+    .pkg-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin-top: 8px;
+    }
+    .pkg-item {
+      background: #f5f8f4; border-radius: 16px;
+      padding: 12px 14px; border: 1px solid var(--border);
+    }
+    .pkg-item .pkg-name { font-size: 0.75rem; font-weight: 600; color: #3f5743; margin-bottom: 4px; }
+    .pkg-item .pkg-units { font-size: 1.2rem; font-weight: 800; color: var(--green-primary); }
+    .pkg-item .pkg-growth { font-size: 0.68rem; font-weight: 600; color: #2d8a56; margin-top: 2px; }
+
+    /* LEADERBOARD */
+    .leaderboard { list-style: none; margin-top: 4px; }
+    .leaderboard li {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 0; border-bottom: 1px solid #eff3ea;
+      font-size: 0.8rem;
+    }
+    .leaderboard li:last-child { border-bottom: none; }
+    .rank-medal { font-size: 1rem; width: 22px; text-align: center; flex-shrink: 0; }
+    .lb-name { flex: 1; font-weight: 600; }
+    .lb-pvs { font-weight: 700; color: var(--green-primary); }
+    .lb-bar { flex: 0 0 70px; }
+
+    /* FOOTER */
+    footer {
+      margin-top: 48px; text-align: center;
+      font-size: 0.72rem; color: #5f7563;
+      border-top: 1px solid var(--border); padding-top: 24px;
+      display: flex; justify-content: center; align-items: center; gap: 8px;
+    }
+
+    @media (max-width: 960px) {
+      .row-split, .row-3 { grid-template-columns: 1fr; }
+      .full-width { grid-column: span 1; }
+      .dashboard-wrapper { padding: 16px 18px; }
+      .pkg-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 520px) {
+      .kpi-grid { grid-template-columns: 1fr 1fr; }
+      .kpi-number { font-size: 1.7rem; }
+      .pkg-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="dashboard-wrapper">
+
+  <!-- HEADER -->
+  <div class="dashboard-header">
+    <div class="logo-area">
+      <div class="logo-icon">🌿</div>
+      <div class="logo-text">
+        <h1>J&M Organics</h1>
+        <span>Director Intelligence · South Africa</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="snapshot-tag"><i class="fas fa-circle" style="color:#2d8a56; font-size:0.5em; margin-right:4px;"></i> Live snapshot — March 2025</div>
+      <div class="date-badge">
+        <i class="fas fa-calendar-alt" style="color: var(--green-primary);"></i>
+        <span id="currentDate"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card highlight">
+      <div class="kpi-title"><i class="fas fa-store"></i> Revenue (MTD)</div>
+      <div class="kpi-number">R 312,450</div>
+      <span class="kpi-trend"><i class="fas fa-arrow-up"></i> +14.2% vs last month</span>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-title"><i class="fas fa-users"></i> Active Resellers</div>
+      <div class="kpi-number">247</div>
+      <span class="kpi-trend">+32 new this quarter</span>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-title"><i class="fas fa-leaf"></i> Total PVs (YTD)</div>
+      <div class="kpi-number">284,500</div>
+      <span class="kpi-trend">Goal: 500k · 57% achieved</span>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-title"><i class="fas fa-coins"></i> Commissions Paid (MTD)</div>
+      <div class="kpi-number">R 47,200</div>
+      <span class="kpi-trend">Zone bonuses +12%</span>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW -->
+  <div class="row-split">
+    <div class="card">
+      <h3><i class="fas fa-chart-line"></i> Weekly Sales & PV Trend</h3>
+      <canvas id="salesChart" style="max-height: 260px;"></canvas>
+    </div>
+    <div class="card">
+      <h3><i class="fas fa-trophy"></i> Reseller Rank Distribution</h3>
+      <canvas id="rankChart" style="max-height: 260px;"></canvas>
+    </div>
+  </div>
+
+  <!-- ORDERS + STOCK -->
+  <div class="row-split">
+    <div class="card">
+      <h3><i class="fas fa-shopping-cart"></i> Recent Orders</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Package</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:#5b7060; font-size:0.75rem;">#JM-10234</td>
+            <td><strong>Lerato N.</strong></td>
+            <td>Package 4</td>
+            <td style="font-weight:700;">R2,800</td>
+            <td><span class="status-dot"><span class="dot dot-green"></span>Completed</span></td>
+          </tr>
+          <tr>
+            <td style="color:#5b7060; font-size:0.75rem;">#JM-10233</td>
+            <td><strong>Thabo M.</strong></td>
+            <td>Beauty Pack 2</td>
+            <td style="font-weight:700;">R680</td>
+            <td><span class="status-dot"><span class="dot dot-green"></span>Completed</span></td>
+          </tr>
+          <tr>
+            <td style="color:#5b7060; font-size:0.75rem;">#JM-10232</td>
+            <td><strong>Priya S.</strong></td>
+            <td>Package 3</td>
+            <td style="font-weight:700;">R2,100</td>
+            <td><span class="status-dot"><span class="dot dot-blue"></span>Shipped</span></td>
+          </tr>
+          <tr>
+            <td style="color:#5b7060; font-size:0.75rem;">#JM-10231</td>
+            <td><strong>Johan vR</strong></td>
+            <td>Chlorophyll (x24)</td>
+            <td style="font-weight:700;">R600</td>
+            <td><span class="status-dot"><span class="dot dot-blue"></span>Shipped</span></td>
+          </tr>
+          <tr>
+            <td style="color:#5b7060; font-size:0.75rem;">#JM-10230</td>
+            <td><strong>Nomfundo K.</strong></td>
+            <td>Package 2</td>
+            <td style="font-weight:700;">R1,400</td>
+            <td><span class="status-dot"><span class="dot dot-green"></span>Completed</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top: 14px; font-size:0.72rem; color:#5f7563; text-align:right;">
+        <i class="fas fa-external-link-alt"></i> Full order log available
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><i class="fas fa-boxes"></i> Stock Alerts & Best Sellers</h3>
+      <div class="alert-box warning">
+        <i class="fas fa-exclamation-triangle" style="color: var(--accent);"></i>
+        <div class="alert-text">
+          <strong>Low stock warning:</strong> Liquid Chlorophyll Juice — only 142 units remaining. Reorder threshold is 200 units.
+        </div>
+      </div>
+
+      <div style="font-size:0.75rem; font-weight:700; color:#3f5743; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.05em;">Top SKUs — units sold (MTD)</div>
+
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Liquid Chlorophyll Juice</span><span style="font-weight:700;">1,284</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:88%;"></div></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Acid Flush Tonic</span><span style="font-weight:700;">780</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:54%;"></div></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Wellness Shot (20s pack)</span><span style="font-weight:700;">610</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:42%;"></div></div>
+      </div>
+
+      <div class="alert-box info" style="margin-top:16px; margin-bottom:0;">
+        <i class="fas fa-medal" style="color: var(--gold);"></i>
+        <div class="alert-text">
+          <strong>PV Leaderboard</strong><br>
+          🥇 Grace Dlamini · 4,200 PVs &nbsp;·&nbsp; 🥈 Sipho Zulu · 3,850 PVs &nbsp;·&nbsp; 🥉 John van Wyk · 2,990 PVs
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMISSIONS + TOP RESELLERS -->
+  <div class="row-split">
+    <div class="card">
+      <h3><i class="fas fa-chart-pie"></i> Commission Breakdown (6 Streams)</h3>
+      <ul class="commission-list">
+        <li>
+          <span class="label"><i class="fas fa-tag" style="color:var(--green-primary);"></i> Retail profit (100%)</span>
+          <span class="amount">R 189,200</span>
+        </li>
+        <li>
+          <span class="label"><i class="fas fa-users" style="color:var(--green-primary);"></i> Zone 1 (12%)</span>
+          <span class="amount">R 32,400</span>
+        </li>
+        <li>
+          <span class="label"><i class="fas fa-network-wired" style="color:var(--green-light);"></i> Zone 2 (10%)</span>
+          <span class="amount muted">R 18,750</span>
+        </li>
+        <li>
+          <span class="label"><i class="fas fa-globe" style="color:var(--green-light);"></i> Zone 3 (10%)</span>
+          <span class="amount muted">R 9,820</span>
+        </li>
+        <li>
+          <span class="label"><i class="fas fa-calendar-week" style="color:var(--gold);"></i> Monthly Zone Bonus (est.)</span>
+          <span class="amount muted">R 14,500</span>
+        </li>
+        <li>
+          <span class="label"><i class="fas fa-medal" style="color:var(--gold);"></i> Rank bonus — Milestone Maker</span>
+          <span class="amount" style="color: var(--gold);">R 50,000</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3><i class="fas fa-crown"></i> Top Resellers by Rank Progress</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Reseller</th>
+            <th>Rank</th>
+            <th>PVs (LTD)</th>
+            <th>Team</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Thandiwe M.</strong></td>
+            <td><span class="badge badge-green">🏆 Success Zone</span></td>
+            <td style="font-weight:700;">11,200</td>
+            <td>23</td>
+          </tr>
+          <tr>
+            <td><strong>Nathi Khumalo</strong></td>
+            <td><span class="badge badge-green">Achievement Zone</span></td>
+            <td style="font-weight:700;">7,850</td>
+            <td>16</td>
+          </tr>
+          <tr>
+            <td><strong>Busisiwe N.</strong></td>
+            <td><span class="badge badge-green">Goal Getter</span></td>
+            <td style="font-weight:700;">4,320</td>
+            <td>9</td>
+          </tr>
+          <tr>
+            <td><strong>Michael R.</strong></td>
+            <td><span class="badge badge-amber">Dream Achiever</span></td>
+            <td style="font-weight:700;">2,940</td>
+            <td>5</td>
+          </tr>
+          <tr>
+            <td><strong>Precious L.</strong></td>
+            <td><span class="badge badge-amber">Progress Zone</span></td>
+            <td style="font-weight:700;">1,200</td>
+            <td>2</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="alert-box info" style="margin-top:16px; margin-bottom:0;">
+        <i class="fas fa-chart-line" style="color:var(--green-primary);"></i>
+        <div class="alert-text">
+          <strong>3 resellers</strong> are approaching President Zone — unlocking a <strong>R100,000</strong> rank bonus.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PACKAGES + PAYOUTS -->
+  <div class="row-split">
+    <div class="card">
+      <h3><i class="fas fa-cubes"></i> Package Sales Performance (MTD)</h3>
+      <div class="pkg-grid">
+        <div class="pkg-item">
+          <div class="pkg-name">Package 1 · R700</div>
+          <div class="pkg-units">87 units</div>
+          <div class="pkg-growth"><i class="fas fa-arrow-up"></i> +18% vs prior month</div>
+        </div>
+        <div class="pkg-item">
+          <div class="pkg-name">Package 2 · R1,400</div>
+          <div class="pkg-units">112 units</div>
+          <div class="pkg-growth"><i class="fas fa-arrow-up"></i> +24% vs prior month</div>
+        </div>
+        <div class="pkg-item">
+          <div class="pkg-name">Package 3 · R2,100</div>
+          <div class="pkg-units">65 units</div>
+          <div class="pkg-growth"><i class="fas fa-arrow-up"></i> +12% vs prior month</div>
+        </div>
+        <div class="pkg-item">
+          <div class="pkg-name">Package 4 · R2,800</div>
+          <div class="pkg-units">43 units</div>
+          <div class="pkg-growth"><i class="fas fa-arrow-up"></i> +31% vs prior month</div>
+        </div>
+      </div>
+      <div class="pkg-item" style="margin-top:12px; background:#f0f7f3;">
+        <div class="pkg-name">Beauty Combos</div>
+        <div class="pkg-units">210 combos</div>
+        <div class="pkg-growth"><i class="fas fa-arrow-up"></i> +9% vs prior month</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><i class="fas fa-wallet"></i> Upcoming Director Payouts (est.)</h3>
+      <div class="payout-row featured">
+        <span><i class="fas fa-calendar-check" style="color:var(--green-primary); margin-right:6px;"></i> Zone Bonus — August cycle</span>
+        <span class="amount">R 22,400</span>
+      </div>
+      <div class="payout-row">
+        <span><i class="fas fa-trophy" style="color:var(--gold); margin-right:6px;"></i> Legacy rank progression funds</span>
+        <span class="amount" style="color:#5b7060; font-weight:600;">R 88,000 <small style="font-weight:400;">(pending)</small></span>
+      </div>
+      <div class="payout-row milestone">
+        <div>
+          <div style="font-weight:700; color:#8a6218; font-size:0.85rem;">🚀 Car Incentive — Apex Zone candidate</div>
+          <div style="font-size:0.73rem; color:#a07a2a; margin-top:3px;">Qualifies upon reaching Apex Zone rank milestone</div>
+        </div>
+        <div class="amount" style="color:var(--gold); font-size:1.1rem; white-space:nowrap; margin-left:12px;">R 600,000</div>
+      </div>
+      <div style="margin-top:14px; font-size:0.72rem; color:#5f7563; line-height:1.6;">
+        Payout estimates are projections based on current rank and volume. Final amounts confirmed at cycle close.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <i class="fas fa-leaf" style="color:var(--green-primary);"></i>
+  J&M Organics Director Dashboard &nbsp;·&nbsp; Business Intelligence &nbsp;·&nbsp; Data snapshot — March 2025
+</footer>
+
+<script>
+  // Date
+  document.getElementById('currentDate').textContent =
+    new Date().toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  // Sales Line Chart
+  new Chart(document.getElementById('salesChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Proj.'],
+      datasets: [
+        {
+          label: 'Revenue (ZAR)',
+          data: [78500, 91200, 88450, 102300, 47800],
+          borderColor: '#1a5c38',
+          backgroundColor: 'rgba(45,138,86,0.07)',
+          tension: 0.35, fill: true,
+          pointBackgroundColor: '#2d8a56',
+          pointBorderColor: '#fff', pointBorderWidth: 2,
+          pointRadius: 5, borderWidth: 2.5,
+        },
+        {
+          label: 'PVs (thousands)',
+          data: [68, 79, 84, 101, 52],
+          borderColor: '#e07b39',
+          borderDash: [5, 5],
+          backgroundColor: 'transparent',
+          tension: 0.25,
+          yAxisID: 'y1',
+          pointBackgroundColor: '#e07b39',
+          pointBorderColor: '#fff', pointBorderWidth: 2,
+          pointRadius: 4,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: {
+        tooltip: { mode: 'index', intersect: false },
+        legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } }
+      },
+      scales: {
+        y: { title: { display: true, text: 'Revenue (R)', font: { size: 10 } }, grid: { color: '#f0f3ee' } },
+        y1: { position: 'right', title: { display: true, text: 'PVs (k)', font: { size: 10 } }, grid: { drawOnChartArea: false } }
+      }
+    }
+  });
+
+  // Rank Donut
+  new Chart(document.getElementById('rankChart').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Progress Zone', 'Dream Achiever', 'Goal Getter', 'Success/Achievement', 'Milestone+'],
+      datasets: [{
+        data: [124, 58, 32, 22, 11],
+        backgroundColor: ['#bdd8b3', '#8fbc8b', '#5f9e6e', '#2d8a56', '#1a5c38'],
+        borderWidth: 0, hoverOffset: 10,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 }, padding: 12 } },
+        tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.raw} resellers` } }
+      },
+      cutout: '62%'
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,472 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>3D Artist Nexus | Golden Axe · Gvmbo · Music Chefs</title>
+    <!-- Tailwind + Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Three.js core and add-ons -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #050510;
+        }
+        /* 3D canvas covers full screen behind content */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        /* all UI sits on top with backdrop blur and glass effect */
+        .ui-content {
+            position: relative;
+            z-index: 10;
+            pointer-events: auto;
+        }
+        .glass-panel {
+            background: rgba(10, 12, 18, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+        }
+        .glass-card {
+            background: rgba(20, 24, 32, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            transition: transform 0.25s ease, box-shadow 0.3s;
+        }
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 20px 35px -15px rgba(0,0,0,0.5), 0 0 0 2px rgba(255, 200, 0, 0.4);
+            border-color: #fbbf24;
+        }
+        button {
+            transition: all 0.2s;
+        }
+        button:active {
+            transform: scale(0.96);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #1a1f2e; }
+        ::-webkit-scrollbar-thumb { background: #f59e0b; border-radius: 10px; }
+        /* Modal styling */
+        .modal {
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+        }
+        input, textarea, select {
+            background: #0f1119;
+            border: 1px solid #2a2f3f;
+            border-radius: 1rem;
+            padding: 0.6rem 1rem;
+            color: white;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 2px rgba(245,158,11,0.3);
+        }
+    </style>
+</head>
+<body>
+
+
+    <div id="canvas-container"></div>
+
+
+    <div class="ui-content relative z-10 px-4 py-6 md:px-8 max-w-7xl mx-auto">
+        <!-- Header with 3D badge -->
+        <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-amber-300 via-pink-400 to-purple-500 bg-clip-text text-transparent drop-shadow-lg">
+                    🎧 3D ARTIST NEXUS
+                </h1>
+                <p class="text-gray-300 mt-1 text-sm flex items-center gap-2"><i class="fas fa-cube"></i> Immersive management · Mouse moves the dimension</p>
+            </div>
+            <button id="addArtistBtn" class="bg-gradient-to-r from-amber-500 to-orange-600 text-black font-bold px-6 py-3 rounded-full shadow-xl flex items-center gap-2 hover:scale-105 transition">
+                <i class="fas fa-plus-circle"></i> Summon artist
+            </button>
+        </div>
+
+
+        <!-- KPI cards with glassmorphism -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-5 mb-10">
+            <div class="glass-panel p-5 text-center">
+                <i class="fas fa-microphone-alt text-amber-400 text-xl"></i>
+                <div class="text-3xl font-black" id="totalArtistsCount">0</div>
+                <div class="text-sm text-gray-300">Artists</div>
+            </div>
+            <div class="glass-panel p-5 text-center">
+                <i class="fas fa-headphones text-pink-400 text-xl"></i>
+                <div class="text-2xl font-black" id="totalListeners">0</div>
+                <div class="text-sm text-gray-300">Monthly listeners</div>
+            </div>
+            <div class="glass-panel p-5 text-center">
+                <i class="fas fa-music text-purple-400 text-xl"></i>
+                <div class="text-3xl font-black" id="totalTracksCount">0</div>
+                <div class="text-sm text-gray-300">Tracks</div>
+            </div>
+            <div class="glass-panel p-5 text-center">
+                <i class="fas fa-calendar-week text-emerald-400 text-xl"></i>
+                <div class="text-3xl font-black" id="totalShowsCount">0</div>
+                <div class="text-sm text-gray-300">Upcoming shows</div>
+            </div>
+        </div>
+
+
+        <!-- Artists grid - dynamic cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="artistsGrid"></div>
+    </div>
+
+
+    <!-- Modal for edit/create -->
+    <div id="artistModal" class="modal fixed inset-0 hidden items-center justify-center z-50 p-4 transition-all">
+        <div class="bg-[#0d0f17] rounded-2xl max-w-2xl w-full border border-amber-500/40 shadow-2xl">
+            <div class="p-5 border-b border-gray-700 flex justify-between items-center">
+                <h2 class="text-2xl font-bold"><i class="fas fa-gem text-amber-400"></i> <span id="modalTitle">Edit Artist</span></h2>
+                <button id="closeModalBtn" class="text-gray-400 hover:text-white text-3xl">&times;</button>
+            </div>
+            <div class="p-6 space-y-5">
+                <input type="hidden" id="editArtistId">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" id="editName" placeholder="Artist name" class="rounded-full">
+                    <select id="editType" class="rounded-full">
+                        <option value="solo">Solo act</option>
+                        <option value="duo">Duo / Group</option>
+                    </select>
+                </div>
+                <div id="duoContainer" class="grid grid-cols-2 gap-4 hidden">
+                    <input type="text" id="memberOne" placeholder="Member 1">
+                    <input type="text" id="memberTwo" placeholder="Member 2">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="number" id="editListeners" placeholder="Monthly listeners">
+                    <input type="number" id="editFollowers" placeholder="Followers">
+                </div>
+                <textarea id="editBio" rows="2" placeholder="Bio / story" class="rounded-2xl"></textarea>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" id="editIg" placeholder="Instagram handle">
+                    <input type="text" id="editTwitter" placeholder="Twitter/X">
+                </div>
+                <!-- Tracks & Shows summary (simplified but functional) -->
+                <div class="border-t border-gray-700 pt-3">
+                    <div class="text-sm text-amber-300 mb-2"><i class="fas fa-music"></i> Tracks (add in edit)</div>
+                    <div id="tracksMiniContainer" class="text-xs space-y-1 max-h-28 overflow-y-auto"></div>
+                    <div class="flex gap-2 mt-2">
+                        <input type="text" id="newTrackName" placeholder="Track name" class="text-sm rounded-full">
+                        <input type="text" id="newTrackStreams" placeholder="Streams" class="text-sm rounded-full">
+                        <button id="addTrackMiniBtn" class="bg-amber-600 px-3 rounded-full text-black text-sm">+</button>
+                    </div>
+                </div>
+                <div class="border-t border-gray-700 pt-3">
+                    <div class="text-sm text-emerald-300"><i class="fas fa-calendar"></i> Upcoming shows</div>
+                    <div id="showsMiniContainer" class="text-xs space-y-1 max-h-28 overflow-y-auto mt-1"></div>
+                    <div class="flex gap-2 mt-2">
+                        <input type="text" id="newShowVenue" placeholder="Venue" class="text-sm rounded-full">
+                        <input type="text" id="newShowDate" placeholder="Date" class="text-sm rounded-full">
+                        <button id="addShowMiniBtn" class="bg-emerald-700 px-3 rounded-full">+</button>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 pt-3">
+                    <button id="cancelModalBtn" class="bg-gray-700 px-5 py-2 rounded-full">Cancel</button>
+                    <button id="saveArtistModalBtn" class="bg-amber-500 text-black font-bold px-6 py-2 rounded-full">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        
+        // -------- 3D SCENE (interactive particle field + flowing shapes) --------
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050510);
+        scene.fog = new THREE.FogExp2(0x050510, 0.002);
+        
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 2, 12);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+        
+        // Mouse interaction for camera rotation
+        let mouseX = 0, mouseY = 0;
+        let targetRotationX = 0, targetRotationY = 0;
+        window.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = (event.clientY / window.innerHeight) * 2 - 1;
+            targetRotationY = mouseX * 0.5;
+            targetRotationX = mouseY * 0.3;
+        });
+        
+        // Central glowing torus knot (flowing object)
+        const knotGeo = new THREE.TorusKnotGeometry(1.2, 0.3, 200, 32, 3, 4);
+        const knotMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0x442200, roughness: 0.3, metalness: 0.8 });
+        const knot = new THREE.Mesh(knotGeo, knotMat);
+        scene.add(knot);
+        
+        // Particle system (galaxy effect)
+        const particlesCount = 1800;
+        const particlesGeo = new THREE.BufferGeometry();
+        const posArray = new Float32Array(particlesCount * 3);
+        for(let i = 0; i < particlesCount; i++) {
+            const radius = 5 + Math.random() * 6;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            posArray[i*3] = radius * Math.sin(phi) * Math.cos(theta);
+            posArray[i*3+1] = radius * Math.sin(phi) * Math.sin(theta) * 0.6;
+            posArray[i*3+2] = radius * Math.cos(phi);
+        }
+        particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particleMat = new THREE.PointsMaterial({ color: 0xffaa44, size: 0.08, transparent: true, blending: THREE.AdditiveBlending });
+        const particles = new THREE.Points(particlesGeo, particleMat);
+        scene.add(particles);
+        
+        // Floating rings around scene
+        const ringGeo = new THREE.TorusGeometry(2.5, 0.05, 64, 200);
+        const ringMat = new THREE.MeshStandardMaterial({ color: 0xff6644, emissive: 0x331100 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = Math.PI / 2;
+        scene.add(ring);
+        
+        const ring2Geo = new THREE.TorusGeometry(3.8, 0.04, 64, 200);
+        const ring2Mat = new THREE.MeshStandardMaterial({ color: 0x44aaff, emissive: 0x004466 });
+        const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+        ring2.rotation.z = Math.PI / 3;
+        scene.add(ring2);
+        
+        // Lights
+        const ambientLight = new THREE.AmbientLight(0x222222);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0xffaa66, 1, 20);
+        pointLight.position.set(2, 3, 4);
+        scene.add(pointLight);
+        const backLight = new THREE.PointLight(0x4466ff, 0.5);
+        backLight.position.set(-2, 1, -4);
+        scene.add(backLight);
+        
+        // Animation loop
+        let time = 0;
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            time += 0.008;
+            // smooth camera follow mouse
+            camera.position.x += (targetRotationY * 2 - camera.position.x) * 0.05;
+            camera.position.y += (-targetRotationX * 1.5 - camera.position.y) * 0.05;
+            camera.lookAt(0, 0, 0);
+            
+            knot.rotation.x = Math.sin(time * 0.5) * 0.5;
+            knot.rotation.y = time * 0.6;
+            knot.rotation.z = Math.cos(time * 0.3) * 0.3;
+            
+            particles.rotation.y = time * 0.1;
+            particles.rotation.x = Math.sin(time * 0.2) * 0.1;
+            ring.rotation.z += 0.005;
+            ring2.rotation.x += 0.003;
+            ring2.rotation.y += 0.002;
+            
+            renderer.render(scene, camera);
+        }
+        animate3D();
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // ---------- ARTIST MANAGEMENT  (core) ----------
+        let artists = [];
+        
+        function loadData() {
+            const stored = localStorage.getItem('3d_artist_nexus');
+            if(stored) artists = JSON.parse(stored);
+            else {
+                artists = [
+                    { id: '1', name: 'Golden Axe', type: 'solo', members: [], monthlyListeners: 1840000, followers: 423000, bio: 'Legendary boom-bap warrior', instagram: '@goldenaxe', twitter: '@goldenaxe_hiphop', tracks: [{id:'t1', name:'Axe Swing', streams:1200000}], upcomingShows: [{id:'s1', venue:'The Roxy, LA', date:'May 12, 2025'}] },
+                    { id: '2', name: 'Gvmbo', type: 'solo', members: [], monthlyListeners: 972000, followers: 187000, bio: 'Raw lyricist, cerebral flow', instagram: '@gvmbomusic', twitter: '@gvmbo', tracks: [{id:'t2', name:'Paranoid Flow', streams:710000}], upcomingShows: [{id:'s2', venue:'Club Vinyl, Denver', date:'May 28, 2025'}] },
+                    { id: '3', name: 'Music Chefs', type: 'duo', members: ['Chef D-Roc', 'Mista Spice'], monthlyListeners: 3100000, followers: 892000, bio: 'Hip-hop duo cooking metaphors', instagram: '@musicchefs', twitter: '@musicchefs', tracks: [{id:'t3', name:'Kitchen Cypher', streams:2100000}], upcomingShows: [{id:'s3', venue:'Rolling Loud, Miami', date:'Jul 18, 2025'}] }
+                ];
+            }
+            renderDashboard();
+        }
+        
+        function saveToLocal() { localStorage.setItem('3d_artist_nexus', JSON.stringify(artists)); }
+        
+        function formatNumber(n) { if(n>=1e6) return (n/1e6).toFixed(1)+'M'; if(n>=1e3) return (n/1e3).toFixed(1)+'K'; return n; }
+        
+        function updateStats() {
+            document.getElementById('totalArtistsCount').innerText = artists.length;
+            const totalListeners = artists.reduce((s,a)=>s+(a.monthlyListeners||0),0);
+            document.getElementById('totalListeners').innerHTML = formatNumber(totalListeners);
+            const totalTracks = artists.reduce((s,a)=>s+(a.tracks?.length||0),0);
+            document.getElementById('totalTracksCount').innerText = totalTracks;
+            const totalShows = artists.reduce((s,a)=>s+(a.upcomingShows?.length||0),0);
+            document.getElementById('totalShowsCount').innerText = totalShows;
+        }
+        
+        function renderDashboard() {
+            const grid = document.getElementById('artistsGrid');
+            if(!grid) return;
+            grid.innerHTML = artists.map(artist => `
+                <div class="glass-card rounded-2xl p-5 transition-all duration-300">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h2 class="text-2xl font-bold bg-gradient-to-r from-white to-amber-200 bg-clip-text text-transparent">${escapeHtml(artist.name)}</h2>
+                            ${artist.type === 'duo' ? `<div class="text-xs text-amber-400"><i class="fas fa-users"></i> ${artist.members?.join(' & ')}</div>` : '<div class="text-xs text-gray-400"><i class="fas fa-microphone"></i> Solo artist</div>'}
+                        </div>
+                        <div class="flex gap-2">
+                            <button data-id="${artist.id}" class="editArtistBtn bg-amber-600/30 hover:bg-amber-500 rounded-full w-9 h-9 flex items-center justify-center"><i class="fas fa-pen"></i></button>
+                            <button data-id="${artist.id}" class="deleteArtistBtn bg-red-600/30 hover:bg-red-600 rounded-full w-9 h-9 flex items-center justify-center"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mt-4 text-sm">
+                        <div class="bg-black/40 rounded-xl p-2 text-center"><i class="fas fa-chart-line text-amber-400"></i> <span class="block font-bold">${formatNumber(artist.monthlyListeners)}</span><span class="text-[10px]">listeners</span></div>
+                        <div class="bg-black/40 rounded-xl p-2 text-center"><i class="fas fa-heart text-pink-400"></i> <span class="block font-bold">${formatNumber(artist.followers)}</span><span class="text-[10px]">followers</span></div>
+                    </div>
+                    <div class="mt-3 text-xs text-gray-300 flex justify-between border-t border-gray-700 pt-2"><span><i class="fas fa-music"></i> ${artist.tracks?.length || 0} tracks</span><span><i class="fas fa-calendar"></i> ${artist.upcomingShows?.length || 0} shows</span></div>
+                    <div class="mt-2 text-xs text-amber-300"><i class="fab fa-instagram"></i> ${escapeHtml(artist.instagram || '—')}</div>
+                </div>
+            `).join('');
+            document.querySelectorAll('.editArtistBtn').forEach(btn => btn.addEventListener('click', (e) => openEditModal(btn.getAttribute('data-id'))));
+            document.querySelectorAll('.deleteArtistBtn').forEach(btn => btn.addEventListener('click', (e) => { if(confirm('Permanently delete artist?')) { artists = artists.filter(a => a.id !== btn.getAttribute('data-id')); saveToLocal(); renderDashboard(); updateStats(); } }));
+            updateStats();
+        }
+        
+        let currentEditId = null;
+        function openEditModal(id) {
+            const artist = artists.find(a => a.id === id);
+            if(!artist) return;
+            currentEditId = id;
+            document.getElementById('editArtistId').value = id;
+            document.getElementById('editName').value = artist.name;
+            document.getElementById('editType').value = artist.type;
+            document.getElementById('editListeners').value = artist.monthlyListeners;
+            document.getElementById('editFollowers').value = artist.followers;
+            document.getElementById('editBio').value = artist.bio || '';
+            document.getElementById('editIg').value = artist.instagram || '';
+            document.getElementById('editTwitter').value = artist.twitter || '';
+            const duoDiv = document.getElementById('duoContainer');
+            if(artist.type === 'duo') {
+                duoDiv.classList.remove('hidden');
+                document.getElementById('memberOne').value = artist.members?.[0] || '';
+                document.getElementById('memberTwo').value = artist.members?.[1] || '';
+            } else duoDiv.classList.add('hidden');
+            renderMiniTracks(artist.tracks || []);
+            renderMiniShows(artist.upcomingShows || []);
+            document.getElementById('artistModal').classList.remove('hidden');
+            document.getElementById('artistModal').style.display = 'flex';
+        }
+        
+        function renderMiniTracks(tracks) {
+            const container = document.getElementById('tracksMiniContainer');
+            container.innerHTML = tracks.map((t, idx) => `<div class="flex justify-between"><span>🎱 ${escapeHtml(t.name)} (${formatNumber(t.streams)})</span><button data-trackidx="${idx}" class="removeTrackMini text-red-400 text-xs">✕</button></div>`).join('');
+            document.querySelectorAll('.removeTrackMini').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = parseInt(btn.getAttribute('data-trackidx'));
+                    const artist = artists.find(a => a.id === currentEditId);
+                    if(artist && artist.tracks) artist.tracks.splice(idx,1);
+                    if(artist) renderMiniTracks(artist.tracks);
+                });
+            });
+        }
+        function renderMiniShows(shows) {
+            const container = document.getElementById('showsMiniContainer');
+            container.innerHTML = shows.map((s, idx) => `<div class="flex justify-between"><span>📍 ${escapeHtml(venue)} — ${escapeHtml(s.date)}</span><button data-showidx="${idx}" class="removeShowMini text-red-400 text-xs">✕</button></div>`).join('');
+            document.querySelectorAll('.removeShowMini').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = parseInt(btn.getAttribute('data-showidx'));
+                    const artist = artists.find(a => a.id === currentEditId);
+                    if(artist && artist.upcomingShows) artist.upcomingShows.splice(idx,1);
+                    if(artist) renderMiniShows(artist.upcomingShows);
+                });
+            });
+        }
+        document.getElementById('addTrackMiniBtn')?.addEventListener('click', () => {
+            const artist = artists.find(a => a.id === currentEditId);
+            if(artist) {
+                const name = document.getElementById('newTrackName').value.trim();
+                const streams = parseInt(document.getElementById('newTrackStreams').value) || 0;
+                if(name) {
+                    if(!artist.tracks) artist.tracks = [];
+                    artist.tracks.push({ id: Date.now()+Math.random(), name, streams });
+                    renderMiniTracks(artist.tracks);
+                    document.getElementById('newTrackName').value = '';
+                    document.getElementById('newTrackStreams').value = '';
+                }
+            }
+        });
+        document.getElementById('addShowMiniBtn')?.addEventListener('click', () => {
+            const artist = artists.find(a => a.id === currentEditId);
+            if(artist) {
+                const venue = document.getElementById('newShowVenue').value.trim();
+                const date = document.getElementById('newShowDate').value.trim();
+                if(venue) {
+                    if(!artist.upcomingShows) artist.upcomingShows = [];
+                    artist.upcomingShows.push({ id: Date.now()+Math.random(), venue, date: date || 'TBA' });
+                    renderMiniShows(artist.upcomingShows);
+                    document.getElementById('newShowVenue').value = '';
+                    document.getElementById('newShowDate').value = '';
+                }
+            }
+        });
+        function saveArtistFromModal() {
+            const id = document.getElementById('editArtistId').value;
+            const artist = artists.find(a => a.id === id);
+            if(!artist) return;
+            artist.name = document.getElementById('editName').value;
+            artist.type = document.getElementById('editType').value;
+            artist.monthlyListeners = parseInt(document.getElementById('editListeners').value) || 0;
+            artist.followers = parseInt(document.getElementById('editFollowers').value) || 0;
+            artist.bio = document.getElementById('editBio').value;
+            artist.instagram = document.getElementById('editIg').value;
+            artist.twitter = document.getElementById('editTwitter').value;
+            if(artist.type === 'duo') {
+                artist.members = [document.getElementById('memberOne').value, document.getElementById('memberTwo').value];
+            } else artist.members = [];
+            saveToLocal();
+            renderDashboard();
+            closeModal();
+        }
+        function closeModal() {
+            document.getElementById('artistModal').classList.add('hidden');
+            document.getElementById('artistModal').style.display = 'none';
+            currentEditId = null;
+        }
+        document.getElementById('addArtistBtn').onclick = () => {
+            const newId = Date.now().toString();
+            artists.push({ id: newId, name: 'New MC', type: 'solo', members: [], monthlyListeners: 0, followers: 0, bio: '', instagram: '', twitter: '', tracks: [], upcomingShows: [] });
+            saveToLocal();
+            renderDashboard();
+            openEditModal(newId);
+        };
+        document.getElementById('closeModalBtn').onclick = closeModal;
+        document.getElementById('cancelModalBtn').onclick = closeModal;
+        document.getElementById('saveArtistModalBtn').onclick = saveArtistFromModal;
+        function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){return m==='&'?'&amp;':m==='<'?'&lt;':'&gt;';}); }
+        loadData();
+    </script>
+</body>
+</html>
