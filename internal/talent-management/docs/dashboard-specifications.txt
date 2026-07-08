@@ -1,0 +1,40 @@
+﻿Entertainment Management Dashboard (V2) - Developer Specifications
+Project Overview: This document outlines the explicit technical and functional specifications required to expand the existing "3D Artist Nexus" interactive dashboard into a comprehensive, multi-layered entertainment management ecosystem. The goal is to build an immersive, scalable SaaS platform usable by multiple labels, management groups, and independent agencies to strategize exposure, streamline operations, and manage diverse talent verticals.
+1. Core Architecture & Visual Theme
+* Visual Language: Retain the existing dark cyberpunk/high-tech aesthetic: background color #050510, glowing ambient gradients, glassmorphic UI overlay panels (high backdrop-blur, subtle borders), and an active, interactive 3D particle field backing utilizing Three.js.
+* Performance Isolation: Ensure all UI elements sit on a high z-index (z-index: 10) with pointer-events: auto, ensuring the underlying 3D canvas animation operates efficiently on mouse movement without obstructing form inputs or data clicking.
+2. Talent Verticals (Data Architecture & Layers)
+The developer must expand the primary data model from a simple "Artist" object to support three unique talent categories. Each category must have dedicated object schemas, localized state management, and custom card templates in the dashboard UI view:
+A. Music Artists Layer
+* Core Scope: Roster management for Solo acts and Duo/Group acts.
+* Data Metrics: Track name registries, streaming counters, follower counts, and global monthly listener stats.
+B. Models Layer
+* Roster Presets: System initialization must support default placeholder profiles for 2 Male Models and 2 Female Models.
+* Industry Metrics: Physical stats/portfolio specifications, lookbook registries, brand ambassador contracts, and agency representations.
+C. Child Models Vertical (High Security Layer)
+* Target Market: Commercial advertising for apparel, retail shops, and seasonal/back-to-school promotional campaigns.
+* Strict Parental Guardrails: Implement an isolated configuration panel labeled "Parental / Mother's Approval Portal". Any media upload, content script, or public booking request requires a verified boolean checkmark (parental_approval: true) before rendering on live campaign timelines.
+3. Comprehensive Workflow & Operational Modules
+Developers must build localized tab views or interactive modally-driven tracking components to govern the following operational timelines per talent profile:
+Module Name
+	Developer Implementation & UI Strategy
+ 
+	Exposure Strategy Engine
+	Provide tracking fields for PR outreach, calculated exposure goals, target metrics, and chronological timelines across social platforms.
+	The Master Schedule
+	Integrate interactive datetime grids mapping out live show dates, tentative bookings, meeting schedules, deal signings, and studio session locks.
+	Media & Creative Workflow
+	Dedicated status boards tracking visual asset deadlines, photo/video shoot schedules, album/lookbook release dates, assigned stylists, and raw video edits.
+	Monetization & Commercials
+	Dedicated sub-panels mapping active corporate Sponsorships, commercial Brand Partnerships, incoming Advertising deals, and high-fashion modeling gigs.
+	CRM & Admin
+	Communication follow-up logs, initial digital onboarding questionnaires, external account management access, and automated reminder flags.
+	
+
+4. Photographer Service Marketplace Core
+* Service Provider Registry: Integrate a distinct registry system letting professional photographers create active vendor profiles directly on the ecosystem.
+* Booking & Package Management: Build a scheduling filter optimized around specialized commercial services: Family Moments Captures, Birthday Celebrations, Portfolio Shoots, and Cover Art sessions.
+5. UI Component Requirements (Developer Instructions)
+* Dynamic Main View Grid: Replace the hardcoded artist layout with a multi-tab switch view enabling quick filters across [All Talent, Music Roster, Model Roster, Photographers].
+* Modals Overhaul: The #artistModal component structure must be converted into a dynamic context-aware form generator. Depending on the vertical selected, form schemas must change fields seamlessly (e.g., swapping out 'Track Streams' for 'Parental Approval Log' or 'Modeling Specs').
+* Local Persistence: Maintain immediate client-side data stability via localStorage sync handlers (e.g., saveToLocal()) before migrating the backend logic over to full-scale enterprise database APIs.
