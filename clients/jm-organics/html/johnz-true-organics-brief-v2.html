@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Mono','Courier New',monospace;background:#0a0a0a;color:#e8e4dc;min-height:100vh}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#111}
+::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
+input,textarea,select{font-family:inherit}
+.tab-btn{background:none;border:none;cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:8px 14px;transition:all 0.15s;color:#555}
+.tab-btn.active{color:#e8e4dc;border-bottom:1px solid #e8e4dc}
+.tab-btn:hover:not(.active){color:#888}
+.scope-row:hover{background:rgba(255,255,255,0.03)}
+.step-item:hover .del-btn{opacity:1}
+.del-btn{opacity:0;background:none;border:none;cursor:pointer;color:#ef4444;font-size:16px;transition:opacity 0.15s;padding:0 4px}
+.pay-row:hover{background:rgba(255,255,255,0.02)}
+.file-row:hover{background:rgba(255,255,255,0.02)}
+.action-btn{background:#e8e4dc;color:#0a0a0a;border:none;padding:7px 16px;font-family:inherit;font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:opacity 0.15s}
+.action-btn:hover{opacity:0.85}
+.ghost-btn{background:none;border:1px solid #333;color:#888;padding:7px 16px;font-family:inherit;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.15s}
+.ghost-btn:hover{border-color:#666;color:#ccc}
+input[type=text],input[type=number],input[type=date],textarea,select{background:#111;border:1px solid #222;color:#e8e4dc;padding:7px 10px;font-size:12px;outline:none;width:100%}
+input:focus,textarea:focus,select:focus{border-color:#444}
+select option{background:#111}
+.link-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.04);border:1px solid #222;color:#888;padding:4px 10px;font-size:11px;text-decoration:none;transition:all 0.15s;cursor:pointer}
+.link-pill:hover{border-color:#555;color:#ccc}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script>
+const {useState,useEffect}=React;
+const STORAGE_KEY="hh-true-organic-brief-v2";
+
+const defaultData={
+  client:{
+    name:"John",business:"True Organics (Distributor)",type:"MLM Distributor",location:"North West",
+    email:"johnztrueorganics@gmail.com",phone:"061 110 4495",
+    referralLink:"https://trueorganics.life/join-us/TO10700879953",
+    bankName:"ABSA",bankAccount:"9408096014",bankHolder:"NTOBANA MARTHA MATHULWE",
+    directorID:"9503230255089",directorDOB:"23 Mar 1995",registeredAddress:"32 Murray Avenue, Brits",
+    notes:"John operates under True Organics parent company. Wants to run independently as 'Johnz True Organics'. Company registration names submitted 20 May. Director registered under spouse: Ntobana Martha Mathulwe. Business address: 32 Murray Avenue, Brits.",
+    lastContact:"26 May 2026",
+    contactStatus:"awaiting"
+  },
+  financial:{
+    quoted:1200,registration:800,domain:280,chatgpt:199,
+    payments:[
+      {date:"14 Apr",amount:300,method:"Capitec",note:"Initial deposit"},
+      {date:"18 Apr",amount:280,method:"Transfer",note:"Domain payment"},
+      {date:"4 May",amount:400,method:"Capitec (partner)",note:"After family emergency mention"},
+      {date:"21 May",amount:500,method:"NoticeOfPayment PDF",note:"Latest payment"}
+    ]
+  },
+  files:[
+    {label:"Website (true-organics.html)",url:"https://drive.google.com/file/d/13ie23Ijax7zegr1x0hDz7Zga-0v_SLS0/view",type:"site"},
+    {label:"Client Brief JSX",url:"https://drive.google.com/file/d/1AoeT_lpRbcOh5E86PnXaqPjSc-UM_G1q/view",type:"doc"},
+    {label:"WhatsApp Chat Export",url:"https://drive.google.com/file/d/1NZ8WSO4t2dD9xOD1a2eJlXp0MXBe6TO_/view",type:"chat"},
+    {label:"True Organics Slides PDF",url:"https://drive.google.com/file/d/1DavaQWmd_IcrTFbyWptsy5PTuiUzO7X1/view",type:"doc"},
+    {label:"True Organics Profile PDF",url:"https://drive.google.com/file/d/1BoEywVtoKeEg8AfCkMk64kWKytPVkCwU/view",type:"doc"},
+    {label:"CIPC Ref: 9459157689",url:"https://bizportal.gov.za",type:"cipc"},
+    {label:"Domain: johnztrueorganics.org",url:"https://www.johnztrueorganics.org",type:"domain"}
+  ],
+  scope:[
+    {task:"Landing page (basic)",status:"done",note:"Built and shown to client"},
+    {task:"Landing page (payment system)",status:"pending",note:"Needs outsourced tool + payment"},
+    {task:"Domain (johnztrueorganics.org)",status:"done",note:"~$20 paid, secured"},
+    {task:"WhatsApp CRM/automation",status:"pending",note:"Discussed only"},
+    {task:"App",status:"not-started",note:"Never initiated"},
+    {task:"Company registration (CIPC)",status:"in-progress",note:"Name reservation lodged. Ref: 9459157689. First choice: Johnz True Organics and Wellness (Pty) Ltd. Awaiting approval 2-5 business days. Incorporation next (R175)."},
+    {task:"AI tools setup (ChatGPT Pro)",status:"pending",note:"R199, not yet delivered"},
+    {task:"Social media strategy",status:"pending",note:"Discussed, never formalised"}
+  ],
+  flags:[
+    {severity:"high",text:"John registered Lesego in True Organics without clear consent — check before accepting"},
+    {severity:"high",text:"Balance of R1200 still outstanding as of 21 May"},
+    {severity:"medium",text:"Scope has tripled from original agreement — no formal written contract exists"},
+    {severity:"medium",text:"Client pushed Chlorophyll juice as diabetes treatment for mom — unprofessional"},
+    {severity:"low",text:"Joining True Organics as member conflicts with agency positioning — avoid downline entanglement"}
+  ],
+  timeline:[
+    {date:"10 Apr",event:"First contact, marketing strategy offer"},
+    {date:"11 Apr",event:"MLM structure revealed, app discussed"},
+    {date:"12-13 Apr",event:"Landing page in progress, domain discussed"},
+    {date:"14 Apr",event:"First partial payment received"},
+    {date:"18 Apr",event:"Domain R280 paid, project ongoing"},
+    {date:"23 Apr",event:"FNB eWallet R200 — ATM complications"},
+    {date:"4 May",event:"R400 sent to partner account"},
+    {date:"21 May",event:"Company registration names submitted, R500 paid"},
+    {date:"22 May",event:"John confirms Lesego 'registered' in True Organics"},
+    {date:"26 May",event:"Director ID confirmed: Ntobana Martha Mathulwe (spouse). Address: 32 Murray Ave, Brits. ABSA 9408096014."},
+    {date:"26 May",event:"Name reservation lodged on BizPortal. Ref: 9459157689. First choice: Johnz True Organics and Wellness (Pty) Ltd."}
+  ],
+  nextSteps:[
+    "Await CIPC name approval SMS (2-5 business days) — Ref: 9459157689",
+    "File incorporation once name approved (R175)",
+    "B-BBEE certificate — apply post-registration when trading begins",
+    "Send formal invoice with all payments received vs. balance",
+    "Do NOT deliver final site until payment confirmed",
+    "Clarify True Organics registration — do not accept if in lieu of payment",
+    "Draft service agreement for remaining scope"
+  ],
+  lastUpdated:"24 Jun 2026"
+};
+
+const statusColors={done:"#22c55e","in-progress":"#f59e0b",pending:"#3b82f6","not-started":"#6b7280"};
+const statusLabels={done:"Done","in-progress":"In Progress",pending:"Pending","not-started":"Not Started"};
+const severityColors={high:"#ef4444",medium:"#f59e0b",low:"#6b7280"};
+const fileTypeColors={site:"#2563eb",doc:"#6b7280",chat:"#25D366",cipc:"#f59e0b",domain:"#8b5cf6"};
+
+function daysSince(dateStr){
+  if(!dateStr)return null;
+  const parts=dateStr.split(" ");
+  const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  if(parts.length===3){
+    const d=parseInt(parts[0]);
+    const m=months.indexOf(parts[1]);
+    const y=parseInt(parts[2]);
+    if(m>=0){const diff=Date.now()-new Date(y,m,d).getTime();return Math.floor(diff/(1000*60*60*24));}
+  }
+  return null;
+}
+
+function App(){
+  const [data,setData]=useState(defaultData);
+  const [tab,setTab]=useState("overview");
+  const [editNote,setEditNote]=useState(false);
+  const [noteText,setNoteText]=useState(defaultData.client.notes);
+  const [newStep,setNewStep]=useState("");
+  const [newPay,setNewPay]=useState({date:"",amount:"",method:"",note:""});
+  const [showPayForm,setShowPayForm]=useState(false);
+  const [saved,setSaved]=useState(false);
+  const [newFile,setNewFile]=useState({label:"",url:"",type:"doc"});
+  const [showFileForm,setShowFileForm]=useState(false);
+  const [newTimelineEntry,setNewTimelineEntry]=useState({date:"",event:""});
+  const [showTimelineForm,setShowTimelineForm]=useState(false);
+  const [newContact,setNewContact]=useState({date:"",note:""});
+  const [showContactForm,setShowContactForm]=useState(false);
+
+  useEffect(()=>{
+    try{const s=localStorage.getItem(STORAGE_KEY);if(s){const p=JSON.parse(s);setData(p);setNoteText(p.client.notes);}}catch(e){}
+  },[]);
+
+  const save=(d)=>{
+    const u={...d,lastUpdated:new Date().toLocaleDateString("en-ZA",{day:"numeric",month:"short",year:"numeric"})};
+    setData(u);
+    try{localStorage.setItem(STORAGE_KEY,JSON.stringify(u));setSaved(true);setTimeout(()=>setSaved(false),1500);}catch(e){}
+  };
+
+  const toggleScope=(i)=>{
+    const s=["not-started","pending","in-progress","done"];
+    const sc=[...data.scope];
+    sc[i]={...sc[i],status:s[(s.indexOf(sc[i].status)+1)%s.length]};
+    save({...data,scope:sc});
+  };
+
+  const addStep=()=>{if(!newStep.trim())return;save({...data,nextSteps:[...data.nextSteps,newStep.trim()]});setNewStep("");};
+  const removeStep=(i)=>save({...data,nextSteps:data.nextSteps.filter((_,idx)=>idx!==i)});
+
+  const addPay=()=>{
+    if(!newPay.date||!newPay.amount)return;
+    save({...data,financial:{...data.financial,payments:[...data.financial.payments,{...newPay,amount:parseFloat(newPay.amount)}]}});
+    setNewPay({date:"",amount:"",method:"",note:""});setShowPayForm(false);
+  };
+
+  const addFile=()=>{
+    if(!newFile.label||!newFile.url)return;
+    save({...data,files:[...data.files,{...newFile}]});
+    setNewFile({label:"",url:"",type:"doc"});setShowFileForm(false);
+  };
+
+  const removeFile=(i)=>save({...data,files:data.files.filter((_,idx)=>idx!==i)});
+
+  const addTimeline=()=>{
+    if(!newTimelineEntry.date||!newTimelineEntry.event)return;
+    save({...data,timeline:[...data.timeline,{...newTimelineEntry}]});
+    setNewTimelineEntry({date:"",event:""});setShowTimelineForm(false);
+  };
+
+  const logContact=()=>{
+    if(!newContact.date)return;
+    const entry={date:newContact.date,event:"Contact logged"+(newContact.note?" — "+newContact.note:"")};
+    save({...data,client:{...data.client,lastContact:newContact.date},timeline:[...data.timeline,entry]});
+    setNewContact({date:"",note:""});setShowContactForm(false);
+  };
+
+  const totalPaid=data.financial.payments.reduce((s,p)=>s+p.amount,0);
+  const totalQuoted=data.financial.quoted+data.financial.registration;
+  const balance=totalQuoted-totalPaid;
+  const daysSinceContact=daysSince(data.client.lastContact);
+  const tabs=["overview","scope","finance","files","flags","timeline"];
+  const R=(tag,props,...children)=>React.createElement(tag,props,...children);
+  const row=(k,v,mono=false)=>R("div",{style:{display:"flex",gap:"12px",marginBottom:"8px",fontSize:"12px"}},
+    R("span",{style:{color:"#555",minWidth:"80px",flexShrink:0}},k),
+    R("span",{style:{color:"#ccc",wordBreak:"break-all",fontFamily:mono?"Syne,sans-serif":"inherit",letterSpacing:mono?"0.08em":"normal"}},v)
+  );
+
+  return R("div",{style:{fontFamily:"'DM Mono','Courier New',monospace",background:"#0a0a0a",minHeight:"100vh",color:"#e8e4dc"}},
+    R("div",{style:{borderBottom:"1px solid #1a1a1a",padding:"24px 28px 0"}},
+      R("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"16px"}},
+        R("div",null,
+          R("div",{style:{fontSize:"10px",letterSpacing:"0.2em",textTransform:"uppercase",color:"#555",marginBottom:"5px"}},"Housing Hues · Client Brief"),
+          R("div",{style:{fontFamily:"Syne,sans-serif",fontSize:"26px",fontWeight:"800",letterSpacing:"-0.02em",lineHeight:1}},"Johnz True Organics"),
+          R("div",{style:{fontSize:"11px",color:"#444",marginTop:"4px",display:"flex",gap:"12px",alignItems:"center",flexWrap:"wrap"}},
+            R("span",null,data.client.type+" · "+data.client.location),
+            daysSinceContact!==null&&R("span",{style:{color:daysSinceContact>14?"#ef4444":daysSinceContact>7?"#f59e0b":"#22c55e"}},
+              "Last contact: "+daysSinceContact+" days ago"
+            )
+          )
+        ),
+        R("div",{style:{textAlign:"right",display:"flex",flexDirection:"column",gap:"6px",alignItems:"flex-end"}},
+          R("div",{style:{background:balance>0?"rgba(239,68,68,0.1)":"rgba(34,197,94,0.1)",border:"1px solid "+(balance>0?"#ef4444":"#22c55e"),color:balance>0?"#ef4444":"#22c55e",padding:"4px 12px",fontSize:"11px",letterSpacing:"0.1em",textTransform:"uppercase"}},
+            balance>0?"R"+balance+" OUTSTANDING":"SETTLED"
+          ),
+          R("div",{style:{fontSize:"10px",color:"#333"}},"Updated "+data.lastUpdated),
+          saved&&R("div",{style:{fontSize:"10px",color:"#22c55e"}},"Saved ✓"),
+          R("button",{className:"ghost-btn",style:{marginTop:"4px",fontSize:"10px",padding:"4px 10px"},onClick:()=>setShowContactForm(!showContactForm)},"+ Log Contact")
+        )
+      ),
+      showContactForm&&R("div",{style:{background:"#0f0f0f",border:"1px solid #1a1a1a",padding:"14px 20px",marginBottom:"12px",display:"grid",gridTemplateColumns:"1fr 2fr auto",gap:"8px",alignItems:"end"}},
+        R("div",null,R("div",{style:{fontSize:"10px",color:"#444",marginBottom:"4px"}},"Date"),R("input",{type:"text",placeholder:"24 Jun 2026",value:newContact.date,onChange:e=>setNewContact({...newContact,date:e.target.value})})),
+        R("div",null,R("div",{style:{fontSize:"10px",color:"#444",marginBottom:"4px"}},"Note"),R("input",{type:"text",placeholder:"What happened?",value:newContact.note,onChange:e=>setNewContact({...newContact,note:e.target.value})})),
+        R("button",{className:"action-btn",onClick:logContact},"Log")
+      ),
+      R("div",{style:{display:"flex",gap:"0",marginBottom:"-1px",flexWrap:"wrap"}},
+        tabs.map(t=>R("button",{key:t,className:"tab-btn "+(tab===t?"active":""),onClick:()=>setTab(t)},t))
+      )
+    ),
+    R("div",{style:{padding:"24px 28px"}},
+      tab==="overview"&&R("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"20px"}},
+        R("div",{style:{border:"1px solid #1a1a1a",padding:"18px"}},
+          R("div",{style:{fontSize:"10px",letterSpacing:"0.15em",color:"#555",textTransform:"uppercase",marginBottom:"12px"}},"Contact"),
+          row("Email",data.client.email),row("Phone",data.client.phone),
+          row("Bank",data.client.bankName+" · "+data.client.bankAccount),
+          row("Acc Name",data.client.bankHolder),
+          row("Director",data.client.directorID,true),
+          row("DOB",data.client.directorDOB),row("Address",data.client.registeredAddress)
+        ),
+        R("div",{style:{display:"flex",flexDirection:"column",gap:"20px"}},
+          R("div",{style:{border:"1px solid #1a1a1a",padding:"18px"}},
+            R("div",{style:{fontSize:"10px",letterSpacing:"0.15em",color:"#555",textTransform:"uppercase",marginBottom:"12px"}},"Financials"),
+            [["Quoted (site)","R"+data.financial.quoted],["Quoted (reg)","R"+data.financial.registration],["Total Paid","R"+totalPaid],["Balance","R"+balance]].map(([k,v])=>
+              R("div",{key:k,style:{display:"flex",justifyContent:"space-between",marginBottom:"7px",fontSize:"12px"}},
+                R("span",{style:{color:"#555"}},k),
+                R("span",{style:{color:k==="Balance"&&balance>0?"#ef4444":"#e8e4dc",fontWeight:k==="Balance"?"500":"400"}},v)
+              )
+            ),
+            R("div",{style:{height:"2px",background:"#1a1a1a",marginTop:"10px",borderRadius:"1px"}},
+              R("div",{style:{height:"100%",width:Math.min((totalPaid/totalQuoted)*100,100)+"%",background:"#22c55e"}})
+            ),
+            R("div",{style:{fontSize:"10px",color:"#333",marginTop:"5px"}},Math.round((totalPaid/totalQuoted)*100)+"% of total received")
+          ),
+          R("div",{style:{border:"1px solid #1a1a1a",padding:"18px"}},
+            R("div",{style:{fontSize:"10px",letterSpacing:"0.15em",color:"#555",textTransform:"uppercase",marginBottom:"12px"}},"CIPC"),
+            row("Ref","9459157689",true),
+            row("Name","Johnz True Organics and Wellness (Pty) Ltd"),
+            row("Status","Name reservation lodged"),
+            row("Next","Incorporation R175 on approval")
+          )
+        ),
+        R("div",{style:{border:"1px solid #1a1a1a",padding:"18px",gridColumn:"1 / -1"}},
+          R("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"12px"}},
+            R("div",{style:{fontSize:"10px",letterSpacing:"0.15em",color:"#555",textTransform:"uppercase"}},"Notes"),
+            !editNote?R("button",{className:"ghost-btn",onClick:()=>setEditNote(true)},"Edit")
+              :R("div",{style:{display:"flex",gap:"8px"}},
+                R("button",{className:"ghost-btn",onClick:()=>{setEditNote(false);setNoteText(data.client.notes);}},"Cancel"),
+                R("button",{className:"action-btn",onClick:()=>{save({...data,client:{...data.client,notes:noteText}});setEditNote(false);}},"Save")
+              )
+          ),
+          editNote?R("textarea",{value:noteText,onChange:e=>setNoteText(e.target.value),rows:4,style:{resize:"vertical"}})
+            :R("p",{style:{fontSize:"13px",color:"#aaa",lineHeight:"1.6",margin:0}},data.client.notes)
+        ),
+        R("div",{style:{border:"1px solid #1a1a1a",padding:"18px",gridColumn:"1 / -1"}},
+          R("div",{style:{fontSize:"10px",letterSpacing:"0.15em",color:"#555",textTransform:"uppercase",marginBottom:"12px"}},"Next Steps"),
+          data.nextSteps.map((s,i)=>
+            R("div",{key:i,className:"step-item",style:{display:"flex",alignItems:"center",gap:"10px",marginBottom:"9px"}},
+              R("span",{style:{color:"#333",fontSize:"12px"}},"→"),
+              R("span",{style:{fontSize:"12px",color:"#ccc",flex:1}},s),
+              R("button",{className:"del-btn",onClick:()=>removeStep(i)},"×")
+            )
+          ),
+          R("div",{style:{display:"flex",gap:"8px",marginTop:"12px"}},
+            R("input",{type:"text",placeholder:"Add next step…",value:newStep,onChange:e=>setNewStep(e.target.value),onKeyDown:e=>e.key==="Enter"&&addStep()}),
+            R("button",{className:"action-btn",onClick:addStep,style:{whiteSpace:"nowrap"}},"Add")
+          )
+        )
+      ),
+      tab==="scope"&&R("div",{style:{border:"1px solid #1a1a1a"}},
+        R("div",{style:{padding:"12px 18px",borderBottom:"1px solid #1a1a1a",fontSize:"10px",letterSpacing:"0.15em",color:"#555",textTransform:"uppercase"}},"Tap status to cycle"),
+        data.scope.map((item,i)=>
+          R("div",{key:i,className:"scope-row",style:{display:"flex",alignItems:"center",gap:"14px",padding:"13px 18px",borderBottom:i<data.scope.length-1?"1px solid #111":"none"}},
+            R("button",{onClick:()=>toggleScope(i),style:{background:statusColors[item.status]+"22",border:"1px solid "+statusColors[item.status],color:statusColors[item.status],padding:"3px 10px",fontSize:"10px",letterSpacing:"0.08em",textTransform:"uppercase",cursor:"pointer",fontFamily:"inherit",minWidth:"90px",textAlign:"center"}},statusLabels[item.status]),
+            R("div",{style:{flex:1}},
+              R("div",{style:{fontSize:"12px",color:item.status==="done"?"#555":"#e8e4dc",textDecoration:item.status==="done"?"line-through":"none"}},item.task),
+              item.note&&R("div",{style:{fontSize:"11px",color:"#333",marginTop:"2px"}},item.note)
+            )
+          )
+        )
+      ),
+      tab==="finance"&&R("div",{style:{display:"flex",flexDirection:"column",gap:"18px"}},
+        R("div",{style:{background:"#111",border:"1px solid #1a1a1a",padding:"18px",display:"flex",gap:"28px",flexWrap:"wrap"}},
+          [["Total Quoted","R"+totalQuoted],["Total Paid","R"+totalPaid],["Outstanding","R"+balance]].map(([k,v])=>
+            R("div",{key:k},
+              R("div",{style:{fontSize:"10px",color:"#555",letterSpacing:"0.12em",textTransform:"uppercase",marginBottom:"4px"}},k),
+              R("div",{style:{fontFamily:"Syne,sans-serif",fontSize:"20px",fontWeight:"700",color:k==="Outstanding"&&balance>0?"#ef4444":"#e8e4dc"}},v)
+            )
+          )
+        ),
+        R("div",{style:{border:"1px solid #1a1a1a"}},
+          R("div",{style:{padding:"12px 18px",borderBottom:"1px solid #1a1a1a",display:"flex",justifyContent:"space-between",alignItems:"center"}},
+            R("div",{style:{fontSize:"10px",letterSpacing:"0.15em",color:"#555",textTransform:"uppercase"}},"Payment Log"),
+            R("button",{className:"ghost-btn",onClick:()=>setShowPayForm(!showPayForm)},"+ Add")
+          ),
+          showPayForm&&R("div",{style:{padding:"14px 18px",borderBottom:"1px solid #1a1a1a",display:"grid",gridTemplateColumns:"1fr 1fr 1fr 2fr auto",gap:"8px",alignItems:"end"}},
+            R("div",null,R("div",{style:{fontSize:"10px",color:"#444",marginBottom:"4px"}},"Date"),R("input",{type:"text",placeholder:"13 Jun",value:newPay.date,onChange:e=>setNewPay({...newPay,date:e.target.value})})),
+            R("div",null,R("div",{style:{fontSize:"10px",color:"#444",marginBottom:"4px"}},"Amount (R)"),R("input",{type:"number",placeholder:"500",value:newPay.amount,onChange:e=>setNewPay({...newPay,amount:e.target.value})})),
+            R("div",null,R("div",{style:{fontSize:"10px",color:"#444",marginBottom:"4px"}},"Method"),R("input",{type:"text",placeholder:"Capitec",value:newPay.method,onChange:e=>setNewPay({...newPay,method:e.target.value})})),
+            R("div",null,R("div",{style:{fontSize:"10px",color:"#444",marginBottom:"4px"}},"Note"),R("input",{type:"text",placeholder:"Optional",value:newPay.note,onChange:e=>setNewPay({...newPay,note:e.target.value})})),
+            R("button",{className:"action-btn",onClick:addPay},"Add")
+          ),
+          data.financial.payments.map((p,i)=>
+            R("div",{key:i,className:"pay-row",style:{display:"flex",alignItems:"center",gap:"14px",padding:"11px 18px",borderBottom:i<data.financial.payments.length-1?"1px solid #111":"none"}},
+              R("span",{style:{fontSize:"11px",color:"#555",minWidth:"55px"}},p.date),
+              R("span",{style:{fontFamily:"Syne,sans-serif",fontSize:"15px",fontWeight:"700",color:"#22c55e",minWidth:"65px"}},"R"+p.amount),
+              R("span",{style:{fontSize:"11px",color:"#555",minWidth:"100px"}},p.method),
+              R("span",{style:{fontSize:"11px",color:"#333"}},p.note)
+            )
+          )
+        )
+      ),
+      tab==="files"&&R("div",{style:{display:"flex",flexDirection:"column",gap:"0",border:"1px solid #1a1a1a"}},
+        R("div",{style:{padding:"12px 18px",borderBottom:"1px solid #1a1a1a",display:"flex",justifyContent:"space-between",alignItems:"center"}},
+          R("div",{style:{fontSize:"10px",letterSpacing:"0.15em",color:"#555",textTransform:"uppercase"}},"Project Files"),
+          R("button",{className:"ghost-btn",onClick:()=>setShowFileForm(!showFileForm)},"+ Add")
+        ),
+        showFileForm&&R("div",{style:{padding:"14px 18px",borderBottom:"1px solid #1a1a1a",display:"grid",gridTemplateColumns:"2fr 3fr 1fr auto",gap:"8px",alignItems:"end"}},
+          R("div",null,R("div",{style:{fontSize:"10px",color:"#444",marginBottom:"4px"}},"Label"),R("input",{type:"text",placeholder:"File name",value:newFile.label,onChange:e=>setNewFile({...newFile,label:e.target.value})})),
+          R("div",null,R("div",{style:{fontSize:"10px",color:"#444",marginBottom:"4px"}},"URL"),R("input",{type:"text",placeholder:"https://...",value:newFile.url,onChange:e=>setNewFile({...newFile,url:e.target.value})})),
+          R("div",null,R("div",{style:{fontSize:"10px",color:"#444",marginBottom:"4px"}},"Type"),
+            R("select",{value:newFile.type,onChange:e=>setNewFile({...newFile,type:e.target.value})},
+              ["doc","site","chat","cipc","domain"].map(t=>R("option",{key:t,value:t},t))
+            )
+          ),
+          R("button",{className:"action-btn",onClick:addFile},"Add")
+        ),
+        data.files.map((f,i)=>
+          R("div",{key:i,className:"file-row",style:{display:"flex",alignItems:"center",gap:"14px",padding:"13px 18px",borderBottom:i<data.files.length-1?"1px solid #111":"none"}},
+            R("span",{style:{fontSize:"10px",letterSpacing:"0.08em",textTransform:"uppercase",color:fileTypeColors[f.type]||"#6b7280",minWidth:"55px"}},f.type),
+            R("span",{style:{fontSize:"12px",color:"#ccc",flex:1}},f.label),
+            R("a",{href:f.url,target:"_blank",rel:"noopener",className:"link-pill"},"Open ↗"),
+            R("button",{className:"del-btn",style:{opacity:1,fontSize:"14px"},onClick:()=>removeFile(i)},"×")
+          )
+        )
+      ),
+      tab==="flags"&&R("div",{style:{display:"flex",flexDirection:"column",gap:"8px"}},
+        data.flags.map((f,i)=>
+          R("div",{key:i,style:{border:"1px solid "+severityColors[f.severity]+"22",borderLeft:"3px solid "+severityColors[f.severity],padding:"13px 16px",display:"flex",gap:"14px",alignItems:"flex-start"}},
+            R("span",{style:{fontSize:"10px",letterSpacing:"0.1em",textTransform:"uppercase",color:severityColors[f.severity],minWidth:"44px",marginTop:"1px"}},f.severity),
+            R("span",{style:{fontSize:"12px",color:"#ccc",lineHeight:"1.6"}},f.text)
+          )
+        )
+      ),
+      tab==="timeline"&&R("div",null,
+        R("div",{style:{display:"flex",justifyContent:"flex-end",marginBottom:"14px"}},
+          R("button",{className:"ghost-btn",onClick:()=>setShowTimelineForm(!showTimelineForm)},"+ Add Entry")
+        ),
+        showTimelineForm&&R("div",{style:{background:"#0f0f0f",border:"1px solid #1a1a1a",padding:"14px 18px",marginBottom:"14px",display:"grid",gridTemplateColumns:"1fr 3fr auto",gap:"8px",alignItems:"end"}},
+          R("div",null,R("div",{style:{fontSize:"10px",color:"#444",marginBottom:"4px"}},"Date"),R("input",{type:"text",placeholder:"24 Jun",value:newTimelineEntry.date,onChange:e=>setNewTimelineEntry({...newTimelineEntry,date:e.target.value})})),
+          R("div",null,R("div",{style:{fontSize:"10px",color:"#444",marginBottom:"4px"}},"Event"),R("input",{type:"text",placeholder:"What happened?",value:newTimelineEntry.event,onChange:e=>setNewTimelineEntry({...newTimelineEntry,event:e.target.value})})),
+          R("button",{className:"action-btn",onClick:addTimeline},"Add")
+        ),
+        R("div",{style:{position:"relative",paddingLeft:"22px"}},
+          R("div",{style:{position:"absolute",left:"6px",top:0,bottom:0,width:"1px",background:"#1a1a1a"}}),
+          data.timeline.map((item,i)=>
+            R("div",{key:i,style:{position:"relative",marginBottom:"22px"}},
+              R("div",{style:{position:"absolute",left:"-19px",top:"4px",width:"7px",height:"7px",borderRadius:"50%",background:i===data.timeline.length-1?"#e8e4dc":"#2a2a2a",border:"1px solid #444"}}),
+              R("div",{style:{fontSize:"10px",color:"#444",letterSpacing:"0.1em",marginBottom:"3px"}},item.date),
+              R("div",{style:{fontSize:"12px",color:"#ccc"}},item.event)
+            )
+          )
+        )
+      )
+    )
+  );
+}
+ReactDOM.render(React.createElement(App),document.getElementById("root"));
+</script>
+</body>
+</html>

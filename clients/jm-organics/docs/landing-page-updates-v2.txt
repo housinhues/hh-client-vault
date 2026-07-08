@@ -1,0 +1,56 @@
+﻿True Organics Landing Page Updates (V2)
+Prepared for: John's Independent True Organics Brand Alignment
+This document contains the updated HTML snippets, structural pricing tables, and localized system parameters required for the landing page. All sections have been tailored specifically to support an independent business presence, entirely removing corporate founder details to prevent any conflict with the main supplier hub.
+________________
+1. Strategic Content Updates & Trust Signals
+* Independent Business Positioning: The landing page content is explicitly optimized to feature this asset as an independent distributor network platform. Trust parameters focus directly on independent membership benefits, local support structures, and direct team onboarding to foster financial independence.
+* Withdrawal System Clarity: To build localized customer and team confidence, the system configuration outlines member withdrawal access strictly between the 1st and the 5th of every month [cite: 1]. A 10% administrative fee applies to all processed withdrawals, with official payouts scheduled for the 15th of each month [cite: 1].
+________________
+2. Integrated Referral Call-to-Action (CTA)
+Replace existing scattered or generic registration links with this standardized, prominent CTA block to direct users straight into your personal network matrix:
+<div class="cta-container" style="text-align: center; padding: 40px 20px; background-color: #f9f9f9; border-radius: 8px; margin: 20px 0;">
+   <h3 style="color: #2e7d32; font-family: Arial, sans-serif;">Ready to Achieve Financial Independence?</h3>
+   <p style="font-family: Arial, sans-serif; color: #555;">Join our dynamic network marketing team and start your wellness journey today.</p>
+   <a href="https://trueorganics.life/join-us/TO10700879953" class="btn-primary" style="display: inline-block; background-color: #e65100; color: #fff; padding: 15px 30px; font-family: Arial, sans-serif; font-weight: bold; text-decoration: none; border-radius: 5px; margin-top: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">START NOW / JOIN US</a>
+</div>
+________________
+3. Finalized Core Product Packages
+The core entry levels and point structures (PVs) must be kept current. Below is the updated HTML pricing grid matching the verified business standards:
+Package Tier
+	Price (ZAR)
+	Point Value (PV)
+ 
+	Package 1
+	R600
+	100 PV
+	Package 2
+	1200
+	200 PV
+	Package 3
+	1800
+	300 PV
+	Package 2400
+	2400
+	400 PV
+	________________
+4. Beauty & Wellness Extensions
+Integrate these newly structured specialty items directly into your product presentation or shop panels:
+Specialty Product Line
+	Price (ZAR)
+	Point Value (PV)
+ 
+	Beauty Package 1
+	R600
+	100 PV
+	Beauty Package 2
+	R624
+	100 PV
+	Beauty Package 3
+	R612
+	100 PV
+	________________
+5. Brand Stabilization Parameters
+To avoid identity conflicts across code layers, execute a global search and replace to align with a unified, independent communication setup:
+* Standard Domain: johnztrueorganics.org (Maintained to ensure a distinct distance from the main corporate supplier hub) [cite: 1]
+* Standard Email Anchor: info@trueorganics.life or johnztrueorganics@gmail.com [cite: 1]
+* Direct Network Target: Link all core call-to-actions directly to: https://trueorganics.life/join-us/TO10700879953 [cite: 1]

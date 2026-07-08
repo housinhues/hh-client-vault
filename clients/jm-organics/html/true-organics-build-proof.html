@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Build Proof — Johnz True Organics | Housing Hues</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a0a0a;
+  --ink2:#1a1a1a;
+  --ink3:#2e2e2e;
+  --paper:#f5f2ec;
+  --paper2:#ede9e1;
+  --accent:#c8611a;
+  --accent2:#e8782a;
+  --gold:#c9a96e;
+  --border:#d4cdc3;
+  --muted:#7a7268;
+  --green:#2d6a4f;
+  --green2:#40916c;
+}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  min-height:100vh;
+}
+
+/* HEADER */
+.header{
+  background:var(--ink);
+  padding:32px 48px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:24px;
+  flex-wrap:wrap;
+}
+.header-left h1{
+  font-family:'Syne',sans-serif;
+  font-size:1.1rem;
+  font-weight:800;
+  color:var(--paper);
+  letter-spacing:-0.01em;
+}
+.header-left p{
+  font-family:'DM Mono',monospace;
+  font-size:0.65rem;
+  color:var(--gold);
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  margin-top:6px;
+}
+.header-right{
+  text-align:right;
+}
+.header-right .doc-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  color:rgba(255,255,255,0.35);
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  display:block;
+  margin-bottom:4px;
+}
+.header-right .doc-title{
+  font-family:'Syne',sans-serif;
+  font-size:1.4rem;
+  font-weight:800;
+  color:var(--paper);
+  letter-spacing:-0.02em;
+}
+
+/* INTRO BAND */
+.intro-band{
+  background:var(--accent);
+  padding:20px 48px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.intro-band p{
+  font-family:'DM Mono',monospace;
+  font-size:0.72rem;
+  color:#fff;
+  letter-spacing:0.05em;
+}
+.intro-band .stamp{
+  background:rgba(255,255,255,0.15);
+  border:1px solid rgba(255,255,255,0.3);
+  color:#fff;
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  padding:6px 14px;
+  border-radius:2px;
+}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:48px 48px 80px;}
+
+/* SECTION LABEL */
+.section-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  font-weight:500;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:20px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.section-label::before{
+  content:'';
+  display:inline-block;
+  width:20px;
+  height:1px;
+  background:var(--accent);
+}
+
+/* PAYMENT TIMELINE */
+.timeline{
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  margin-bottom:40px;
+}
+.timeline-row{
+  display:grid;
+  grid-template-columns:120px 100px 180px 1fr 100px;
+  gap:16px;
+  align-items:center;
+  padding:14px 20px;
+  border-bottom:1px solid var(--border);
+  transition:background 0.15s;
+}
+.timeline-row:hover{background:var(--paper2);}
+.timeline-row.header-row{
+  background:var(--ink2);
+  border-bottom:none;
+  border-radius:4px 4px 0 0;
+}
+.timeline-row.header-row span{
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.5);
+}
+.timeline-row.total-row{
+  background:var(--ink);
+  border-radius:0 0 4px 4px;
+  border-bottom:none;
+}
+.timeline-row.total-row span{
+  color:var(--gold);
+  font-family:'DM Mono',monospace;
+  font-size:0.75rem;
+  font-weight:500;
+}
+.timeline-row.total-row .amount-col{
+  font-family:'Syne',sans-serif;
+  font-size:1.1rem;
+  font-weight:800;
+  color:#fff;
+}
+.date-col{font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted);}
+.amount-col{font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:500;color:var(--green);}
+.method-col{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);}
+.note-col{font-size:0.8rem;color:var(--ink3);}
+.verified-col{display:flex;align-items:center;gap:6px;}
+.badge{
+  font-family:'DM Mono',monospace;
+  font-size:0.58rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  padding:3px 8px;
+  border-radius:2px;
+}
+.badge.verified{background:#d8f3dc;color:#1b4332;}
+.badge.screenshot{background:#fff3cd;color:#856404;}
+
+/* BUILD ANATOMY */
+.anatomy-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  margin-bottom:40px;
+}
+.anatomy-card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:6px;
+  overflow:hidden;
+}
+.anatomy-card-header{
+  background:var(--ink2);
+  padding:14px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.anatomy-card-header h3{
+  font-family:'Syne',sans-serif;
+  font-size:0.85rem;
+  font-weight:700;
+  color:var(--paper);
+}
+.anatomy-card-header .file-tag{
+  font-family:'DM Mono',monospace;
+  font-size:0.58rem;
+  color:var(--gold);
+  letter-spacing:0.1em;
+}
+.anatomy-card-body{padding:20px;}
+.anatomy-item{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid var(--paper2);
+}
+.anatomy-item:last-child{border-bottom:none;}
+.anatomy-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--accent);
+  margin-top:6px;
+  flex-shrink:0;
+}
+.anatomy-item-content h4{
+  font-family:'DM Mono',monospace;
+  font-size:0.7rem;
+  font-weight:500;
+  color:var(--ink);
+  margin-bottom:3px;
+}
+.anatomy-item-content p{
+  font-size:0.75rem;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+/* COLOR SYSTEM */
+.color-system{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-bottom:40px;
+}
+.color-swatch{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  align-items:center;
+}
+.swatch-block{
+  width:52px;
+  height:52px;
+  border-radius:4px;
+  border:1px solid rgba(0,0,0,0.08);
+}
+.swatch-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.58rem;
+  color:var(--muted);
+  text-align:center;
+}
+.swatch-name{
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  font-weight:500;
+  color:var(--ink);
+  text-align:center;
+}
+
+/* SCOPE TABLE */
+.scope-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-bottom:40px;
+}
+.scope-table th{
+  background:var(--ink2);
+  color:rgba(255,255,255,0.5);
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  padding:12px 16px;
+  text-align:left;
+}
+.scope-table td{
+  padding:14px 16px;
+  border-bottom:1px solid var(--border);
+  font-size:0.8rem;
+}
+.scope-table tr:hover td{background:var(--paper2);}
+.status-done{
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  padding:3px 8px;
+  background:#d8f3dc;
+  color:#1b4332;
+  border-radius:2px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+.status-pending{
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  padding:3px 8px;
+  background:#fff3cd;
+  color:#856404;
+  border-radius:2px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+.status-progress{
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  padding:3px 8px;
+  background:#cfe2ff;
+  color:#084298;
+  border-radius:2px;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+
+/* COST DEFENSE */
+.cost-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-bottom:16px;
+}
+.cost-table th{
+  background:var(--ink);
+  color:rgba(255,255,255,0.45);
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  padding:14px 20px;
+  text-align:left;
+}
+.cost-table td{
+  padding:14px 20px;
+  border-bottom:1px solid var(--border);
+  font-size:0.82rem;
+  vertical-align:top;
+}
+.cost-table tr:hover td{background:var(--paper2);}
+.cost-table .item-name{font-weight:500;color:var(--ink);}
+.cost-table .item-desc{font-size:0.72rem;color:var(--muted);margin-top:4px;}
+.cost-table .item-price{
+  font-family:'DM Mono',monospace;
+  font-size:0.9rem;
+  font-weight:500;
+  color:var(--ink);
+  white-space:nowrap;
+}
+.cost-total-row td{
+  background:var(--ink);
+  color:var(--gold);
+  font-family:'DM Mono',monospace;
+  font-size:0.85rem;
+  font-weight:500;
+  border-bottom:none;
+}
+.cost-total-row .big-total{
+  font-family:'Syne',sans-serif;
+  font-size:1.2rem;
+  font-weight:800;
+  color:#fff;
+}
+
+/* BALANCE BOX */
+.balance-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:16px;
+  margin-bottom:40px;
+}
+.balance-card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:24px;
+}
+.balance-card .b-label{
+  font-family:'DM Mono',monospace;
+  font-size:0.6rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:12px;
+}
+.balance-card .b-amount{
+  font-family:'Syne',sans-serif;
+  font-size:1.6rem;
+  font-weight:800;
+  color:var(--ink);
+}
+.balance-card.received .b-amount{color:var(--green);}
+.balance-card.outstanding .b-amount{color:var(--accent);}
+.balance-card.next .b-amount{color:var(--ink);}
+.balance-card .b-note{
+  font-size:0.72rem;
+  color:var(--muted);
+  margin-top:8px;
+  line-height:1.5;
+}
+
+/* NEXT PHASE */
+.next-phase{
+  background:var(--ink);
+  border-radius:6px;
+  padding:32px;
+  margin-bottom:40px;
+}
+.next-phase h3{
+  font-family:'Syne',sans-serif;
+  font-size:1rem;
+  font-weight:800;
+  color:var(--paper);
+  margin-bottom:20px;
+}
+.next-item{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.next-item:last-child{border-bottom:none;}
+.next-item-num{
+  font-family:'DM Mono',monospace;
+  font-size:0.65rem;
+  color:var(--gold);
+  padding-top:2px;
+  flex-shrink:0;
+}
+.next-item-text h4{
+  font-size:0.85rem;
+  color:var(--paper);
+  font-weight:500;
+  margin-bottom:4px;
+}
+.next-item-text p{
+  font-family:'DM Mono',monospace;
+  font-size:0.65rem;
+  color:rgba(255,255,255,0.4);
+}
+
+/* FOOTER */
+.footer{
+  background:var(--ink2);
+  padding:24px 48px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.footer p{
+  font-family:'DM Mono',monospace;
+  font-size:0.62rem;
+  color:rgba(255,255,255,0.35);
+  letter-spacing:0.08em;
+}
+.footer .agency{
+  font-family:'Syne',sans-serif;
+  font-size:0.85rem;
+  font-weight:700;
+  color:var(--gold);
+}
+
+/* SECTION SPACER */
+.section{margin-bottom:48px;}
+
+/* CODE BLOCK */
+.code-block{
+  background:var(--ink2);
+  border-radius:6px;
+  padding:20px 24px;
+  margin:16px 0;
+  overflow-x:auto;
+}
+.code-block code{
+  font-family:'DM Mono',monospace;
+  font-size:0.72rem;
+  color:var(--gold);
+  line-height:1.8;
+  display:block;
+  white-space:pre;
+}
+.code-comment{color:rgba(255,255,255,0.3);}
+.code-key{color:#74c69d;}
+.code-val{color:#f4a261;}
+
+/* DIVIDER */
+.divider{
+  height:1px;
+  background:var(--border);
+  margin:40px 0;
+}
+
+@media(max-width:768px){
+  .main{padding:32px 24px 60px;}
+  .header{padding:24px;}
+  .intro-band{padding:16px 24px;}
+  .timeline-row{grid-template-columns:90px 80px 1fr;gap:8px;}
+  .method-col,.verified-col{display:none;}
+  .anatomy-grid{grid-template-columns:1fr;}
+  .balance-grid{grid-template-columns:1fr;}
+  .cost-table td,.cost-table th{padding:10px 12px;}
+  .footer{padding:20px 24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>HOUSING HUES</h1>
+    <p>Creative & Operational Agency</p>
+  </div>
+  <div class="header-right">
+    <span class="doc-label">Document Type</span>
+    <span class="doc-title">Build Proof & Cost Defense</span>
+  </div>
+</div>
+
+<div class="intro-band">
+  <p>Client: John Ntobana · Johnz True Organics and Wellness (Pty) Ltd · North West · July 2026</p>
+  <span class="stamp">Confidential</span>
+</div>
+
+<div class="main">
+
+  <!-- PAYMENT RECORD -->
+  <div class="section">
+    <div class="section-label">01 — Verified Payment Record</div>
+    <div class="timeline">
+      <div class="timeline-row header-row">
+        <span>Date</span>
+        <span>Amount</span>
+        <span>Method</span>
+        <span>Note</span>
+        <span>Status</span>
+      </div>
+
+      <div class="timeline-row">
+        <span class="date-col">14 Apr 2026</span>
+        <span class="amount-col">R300.00</span>
+        <span class="method-col">Capitec</span>
+        <span class="note-col">Initial deposit — project kickoff</span>
+        <div class="verified-col"><span class="badge screenshot">Brief</span></div>
+      </div>
+      <div class="timeline-row">
+        <span class="date-col">18 Apr 2026</span>
+        <span class="amount-col">R280.00</span>
+        <span class="method-col">Transfer</span>
+        <span class="note-col">Domain registration — johnztrueorganics.org</span>
+        <div class="verified-col"><span class="badge screenshot">Brief</span></div>
+      </div>
+      <div class="timeline-row">
+        <span class="date-col">23 Apr 2026</span>
+        <span class="amount-col">R200.00</span>
+        <span class="method-col">FNB eWallet</span>
+        <span class="note-col">Wallet PIN: via WhatsApp — R A Spadonie</span>
+        <div class="verified-col"><span class="badge screenshot">WhatsApp</span></div>
+      </div>
+      <div class="timeline-row">
+        <span class="date-col">4 May 2026</span>
+        <span class="amount-col">R400.00</span>
+        <span class="method-col">Capitec (partner)</span>
+        <span class="note-col">Continued payment after family emergency</span>
+        <div class="verified-col"><span class="badge screenshot">Brief</span></div>
+      </div>
+      <div class="timeline-row">
+        <span class="date-col">21 May 2026</span>
+        <span class="amount-col">R500.00</span>
+        <span class="method-col">ABSA Transact</span>
+        <span class="note-col">CIPC name reservation lodged same date — Ref: 9459157689</span>
+        <div class="verified-col"><span class="badge verified">ABSA Notice</span></div>
+      </div>
+      <div class="timeline-row">
+        <span class="date-col">3 Jun 2026</span>
+        <span class="amount-col">R700.00</span>
+        <span class="method-col">ABSA Transact</span>
+        <span class="note-col">Txn: 80CA35749F-1 · Capitec 1529352299 · Ref: Kwena</span>
+        <div class="verified-col"><span class="badge verified">ABSA Notice</span></div>
+      </div>
+      <div class="timeline-row">
+        <span class="date-col">8 Jun 2026</span>
+        <span class="amount-col">R247.13</span>
+        <span class="method-col">ABSA Transact</span>
+        <span class="note-col">Txn: 80CA35749F-2 · Capitec 1529352299 · Ref: Kwena</span>
+        <div class="verified-col"><span class="badge verified">ABSA Notice</span></div>
+      </div>
+      <div class="timeline-row">
+        <span class="date-col">17 Jun 2026</span>
+        <span class="amount-col">R300.00</span>
+        <span class="method-col">ABSA Transact</span>
+        <span class="note-col">Capitec 1529352299 · Ref: Kwena</span>
+        <div class="verified-col"><span class="badge verified">ABSA Notice</span></div>
+      </div>
+      <div class="timeline-row">
+        <span class="date-col">26 Jun 2026</span>
+        <span class="amount-col">R160.00</span>
+        <span class="method-col">ABSA Transact</span>
+        <span class="note-col">Capitec 1529352299 · Ref: Kwena · Immediate</span>
+        <div class="verified-col"><span class="badge verified">ABSA Notice</span></div>
+      </div>
+      <div class="timeline-row total-row">
+        <span>TOTAL RECEIVED</span>
+        <span class="amount-col big-total">R3,087.13</span>
+        <span>8 payments</span>
+        <span>Apr – Jul 2026</span>
+        <span>—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUILD ANATOMY -->
+  <div class="section">
+    <div class="section-label">02 — Build Anatomy: What Was Constructed</div>
+    <div class="anatomy-grid">
+
+      <div class="anatomy-card">
+        <div class="anatomy-card-header">
+          <h3>Landing Page</h3>
+          <span class="file-tag">true-organics.html · Last modified 4 Jun 2026</span>
+        </div>
+        <div class="anatomy-card-body">
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>Design Token System</h4>
+              <p>12 CSS custom properties defined at :root — 5 green tones, 3 orange/gold tones, cream background, 2 text shades. Every visual decision derives from these tokens. Changing one variable updates the entire site.</p>
+            </div>
+          </div>
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>Typography Architecture</h4>
+              <p>Playfair Display (display/headers) paired with DM Sans (body/UI). Deliberate pairing — editorial authority meets modern legibility. Type scale built with clamp() for fluid responsiveness across screen sizes.</p>
+            </div>
+          </div>
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>Fixed Nav with Backdrop Blur</h4>
+              <p>position:fixed with backdrop-filter:blur(16px) and rgba transparency — stays readable over any content as user scrolls. z-index:200 ensures it sits above all content layers.</p>
+            </div>
+          </div>
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>Hero Section Engineering</h4>
+              <p>Full-viewport hero with dual radial gradient background — layered depth without images. CSS Grid two-column layout. fadeUp keyframe animation on load. Responsive collapse at mobile breakpoint.</p>
+            </div>
+          </div>
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>Multi-Channel CTA System</h4>
+              <p>4 distinct call-to-action buttons — WhatsApp (green #25D366), Facebook (#1877F2), Start Now (brand orange), Email (ghost). Each with unique hover states, box-shadows, and transform animations. Not generic — channel-specific.</p>
+            </div>
+          </div>
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>Product Card Components</h4>
+              <p>Reusable .pc component class with featured variant. Price display, tag system, grid layout. Navigable via anchor: #products.</p>
+            </div>
+          </div>
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>SEO Infrastructure</h4>
+              <p>Title tag, meta description, and keyword meta tag all configured. "True Organics - 100% Organic Products | South Africa" — search engine ready from day one.</p>
+            </div>
+          </div>
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>Referral Link Integration</h4>
+              <p>https://trueorganics.life/join-us/TO10700879953 embedded as primary CTA throughout — every "Join Now" action routes through John's personal referral, directly building his downline.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="anatomy-card">
+        <div class="anatomy-card-header">
+          <h3>Client Management Dashboard</h3>
+          <span class="file-tag">johnz-true-organics-brief-v2.html · Jun 2026</span>
+        </div>
+        <div class="anatomy-card-body">
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>React State Architecture</h4>
+              <p>Built with React 18 (CDN) — useState and useEffect managing all data. Full tab system: Overview, Financial, Scope, Flags, Timeline, Next Steps, Files. No page reloads — single-page application.</p>
+            </div>
+          </div>
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>Client Data Model</h4>
+              <p>Structured JSON object containing: client profile, financial summary, payment log, scope items with status, risk flags with severity, project timeline, next steps, file index. Not a note — an operational record.</p>
+            </div>
+          </div>
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>Payment Ledger</h4>
+              <p>Every payment logged with date, amount, method, and note. Running total computed from entries. Foundation for this exact cost defense document.</p>
+            </div>
+          </div>
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>Risk Flag System</h4>
+              <p>Three-tier severity model: high / medium / low. Each flag is a structured object — not free text. Colour-coded: red, amber, grey. Built to surface issues before they become problems.</p>
+            </div>
+          </div>
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>Scope Tracker</h4>
+              <p>8 deliverable items tracked with status: done / in-progress / pending / not-started. Status badges colour-coded. Each item has a note field. Built as a living document, not a static list.</p>
+            </div>
+          </div>
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>File Reference Index</h4>
+              <p>7 linked assets: landing page, client brief JSX, WhatsApp export, business slides PDF, brand profile PDF, CIPC portal link, live domain. All accessible from one interface.</p>
+            </div>
+          </div>
+          <div class="anatomy-item">
+            <div class="anatomy-dot"></div>
+            <div class="anatomy-item-content">
+              <h4>CIPC Registration Record</h4>
+              <p>Reference: 9459157689. Company name: Johnz True Organics and Wellness (Pty) Ltd. Director: Ntobana Martha Mathulwe (DOB 23 Mar 1995). Address: 32 Murray Avenue, Brits. ABSA: 9408096014. All stored in the system.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DESIGN SYSTEM -->
+  <div class="section">
+    <div class="section-label">03 — Colour System (Design Tokens)</div>
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:20px;">These 12 variables govern every visual decision in the landing page. A complete design system, not ad-hoc styling.</p>
+    <div class="color-system">
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#1a3d2b;"></div>
+        <div class="swatch-name">--g1</div>
+        <div class="swatch-label">#1a3d2b<br>Deep Forest</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#2d6a4f;"></div>
+        <div class="swatch-name">--g2</div>
+        <div class="swatch-label">#2d6a4f<br>Forest</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#40916c;"></div>
+        <div class="swatch-name">--g3</div>
+        <div class="swatch-label">#40916c<br>Mid Green</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#74c69d;"></div>
+        <div class="swatch-name">--g4</div>
+        <div class="swatch-label">#74c69d<br>Mint</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#d8f3dc;"></div>
+        <div class="swatch-name">--gp</div>
+        <div class="swatch-label">#d8f3dc<br>Pale Mint</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#e76f28;"></div>
+        <div class="swatch-name">--or</div>
+        <div class="swatch-label">#e76f28<br>Brand Orange</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#f4a261;"></div>
+        <div class="swatch-name">--ow</div>
+        <div class="swatch-label">#f4a261<br>Warm Orange</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#f6bd60;"></div>
+        <div class="swatch-name">--gd</div>
+        <div class="swatch-label">#f6bd60<br>Gold</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#fefae0;"></div>
+        <div class="swatch-name">--cream</div>
+        <div class="swatch-label">#fefae0<br>Cream BG</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#1a2e1e;"></div>
+        <div class="swatch-name">--td</div>
+        <div class="swatch-label">#1a2e1e<br>Dark Text</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#3a5a40;"></div>
+        <div class="swatch-name">--tm</div>
+        <div class="swatch-label">#3a5a40<br>Mid Text</div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#0f2318;"></div>
+        <div class="swatch-name">hero-dark</div>
+        <div class="swatch-label">#0f2318<br>Hero Depth</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <code><span class="code-comment">/* CSS Custom Properties — Design Token System */</span>
+<span class="code-key">:root</span> {
+  <span class="code-comment">/* Green scale — 5 tones */</span>
+  <span class="code-key">--g1</span>: <span class="code-val">#1a3d2b</span>;  <span class="code-comment">/* Deep forest — hero background anchor */</span>
+  <span class="code-key">--g2</span>: <span class="code-val">#2d6a4f</span>;  <span class="code-comment">/* Forest — mid tone */</span>
+  <span class="code-key">--g3</span>: <span class="code-val">#40916c</span>;  <span class="code-comment">/* Active green */</span>
+  <span class="code-key">--g4</span>: <span class="code-val">#74c69d</span>;  <span class="code-comment">/* Mint — nav links, accents */</span>
+  <span class="code-key">--gp</span>: <span class="code-val">#d8f3dc</span>;  <span class="code-comment">/* Pale mint — backgrounds */</span>
+
+  <span class="code-comment">/* Orange/gold scale — 3 tones */</span>
+  <span class="code-key">--or</span>: <span class="code-val">#e76f28</span>;  <span class="code-comment">/* Brand orange — primary CTA */</span>
+  <span class="code-key">--ow</span>: <span class="code-val">#f4a261</span>;  <span class="code-comment">/* Warm orange — hover state */</span>
+  <span class="code-key">--gd</span>: <span class="code-val">#f6bd60</span>;  <span class="code-comment">/* Gold — emphasis */</span>
+
+  <span class="code-comment">/* Neutral */</span>
+  <span class="code-key">--cream</span>: <span class="code-val">#fefae0</span>;  <span class="code-comment">/* Page background */</span>
+  <span class="code-key">--td</span>:    <span class="code-val">#1a2e1e</span>;  <span class="code-comment">/* Primary text */</span>
+  <span class="code-key">--tm</span>:    <span class="code-val">#3a5a40</span>;  <span class="code-comment">/* Secondary text */</span>
+}</code>
+    </div>
+  </div>
+
+  <!-- SCOPE -->
+  <div class="section">
+    <div class="section-label">04 — Scope of Work: Status</div>
+    <table class="scope-table">
+      <thead>
+        <tr>
+          <th>Deliverable</th>
+          <th>Status</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Landing page — full build</td>
+          <td><span class="status-done">Done</span></td>
+          <td>Built, shown to client. File: true-organics.html</td>
+        </tr>
+        <tr>
+          <td>Domain registration — johnztrueorganics.org</td>
+          <td><span class="status-done">Done</span></td>
+          <td>~$20 paid and secured. Live domain confirmed.</td>
+        </tr>
+        <tr>
+          <td>CIPC name reservation</td>
+          <td><span class="status-progress">In Progress</span></td>
+          <td>Ref: 9459157689 · Johnz True Organics and Wellness (Pty) Ltd · Incorporation: R175 pending</td>
+        </tr>
+        <tr>
+          <td>Client management dashboard</td>
+          <td><span class="status-done">Done</span></td>
+          <td>johnz-true-organics-brief-v2.html — internal agency tool</td>
+        </tr>
+        <tr>
+          <td>Landing page — payment system</td>
+          <td><span class="status-pending">Pending</span></td>
+          <td>Yoco / PayFast integration. Next phase deliverable.</td>
+        </tr>
+        <tr>
+          <td>WhatsApp CRM / automation</td>
+          <td><span class="status-pending">Pending</span></td>
+          <td>Discussed. Requires scoping and separate quote.</td>
+        </tr>
+        <tr>
+          <td>AI tools setup (ChatGPT Pro)</td>
+          <td><span class="status-pending">Pending</span></td>
+          <td>R199. Not yet delivered.</td>
+        </tr>
+        <tr>
+          <td>Logo design</td>
+          <td><span class="status-done">Done</span></td>
+          <td>Completed. R500 outstanding — not yet paid by client.</td>
+        </tr>
+        <tr>
+          <td>Social media strategy</td>
+          <td><span class="status-pending">Pending</span></td>
+          <td>July campaign support begins now. Formal strategy to follow.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- COST DEFENSE -->
+  <div class="section">
+    <div class="section-label">05 — Cost Defense: Market Value of Work Delivered</div>
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:20px;">The following reflects conservative SA market rates for equivalent agency output. These are not inflated figures — they represent the floor of what comparable work costs when commissioned professionally.</p>
+    <table class="cost-table">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Market Rate</th>
+          <th>Charged</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="item-name">Full landing page — custom build</div>
+            <div class="item-desc">HTML/CSS/JS · Design system · SEO · Mobile responsive · Multi-CTA · Animations · Referral integration</div>
+          </td>
+          <td class="item-price">R6,000–R12,000</td>
+          <td class="item-price">R1,200</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="item-name">Domain registration & setup</div>
+            <div class="item-desc">johnztrueorganics.org · DNS configuration · Brand isolation from parent company</div>
+          </td>
+          <td class="item-price">R500–R800</td>
+          <td class="item-price">R280</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="item-name">CIPC company registration</div>
+            <div class="item-desc">BizPortal submission · Name reservation · Director registration · Compliance setup</div>
+          </td>
+          <td class="item-price">R1,200–R2,500</td>
+          <td class="item-price">R800</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="item-name">Client management dashboard</div>
+            <div class="item-desc">React SPA · Payment ledger · Scope tracker · Risk flags · File index · Timeline — built as internal agency infrastructure</div>
+          </td>
+          <td class="item-price">R3,000–R6,000</td>
+          <td class="item-price">Included</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="item-name">4 x landing page update documents</div>
+            <div class="item-desc">V1–V4 · Pricing tables · HTML snippets · Brand alignment parameters · CTA blocks</div>
+          </td>
+          <td class="item-price">R800–R1,500</td>
+          <td class="item-price">Included</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="item-name">Logo design</div>
+            <div class="item-desc">Brand mark for Johnz True Organics and Wellness — completed, delivered</div>
+          </td>
+          <td class="item-price">R1,500–R4,000</td>
+          <td class="item-price" style="color:var(--accent);">R500 <span style="font-size:0.65rem;color:var(--muted);">(outstanding)</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="item-name">Content sync skill file</div>
+            <div class="item-desc">true-organics-content-sync.skill — automated content management system</div>
+          </td>
+          <td class="item-price">R500–R1,000</td>
+          <td class="item-price">Included</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="cost-total-row">
+          <td>Market Value of Work Delivered</td>
+          <td class="item-price" style="color:rgba(255,255,255,0.5)">R12,000–R23,800</td>
+          <td><span class="big-total">R2,280</span></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- BALANCE -->
+  <div class="section">
+    <div class="section-label">06 — Financial Summary</div>
+    <div class="balance-grid">
+      <div class="balance-card received">
+        <div class="b-label">Total Received from Client</div>
+        <div class="b-amount">R3,087.13</div>
+        <div class="b-note">8 verified client payments across Apr–Jul 2026. Excludes R430 Housing Hues MLM profit (separate business activity — not client payments).</div>
+      </div>
+      <div class="balance-card outstanding">
+        <div class="b-label">Deductibles</div>
+        <div class="b-amount">R1,200.00</div>
+        <div class="b-note">R700 — True Organics joining package purchased (3 Jun 2026 · outflow). R500 — logo design, completed, not yet paid by client.</div>
+      </div>
+      <div class="balance-card next">
+        <div class="b-label">Net Position</div>
+        <div class="b-amount">R2,387.13</div>
+        <div class="b-note">Actual income retained after deductibles. R500 logo still outstanding — to be settled before next phase begins.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEXT PHASE -->
+  <div class="next-phase">
+    <h3>Next Phase — July 2026 Onwards</h3>
+    <div class="next-item">
+      <span class="next-item-num">01</span>
+      <div class="next-item-text">
+        <h4>July Campaign Support</h4>
+        <p>Content strategy, posting schedule, WhatsApp broadcast structure for the 50-affiliate challenge and Car Race activation running until 31 July 2026.</p>
+      </div>
+    </div>
+    <div class="next-item">
+      <span class="next-item-num">02</span>
+      <div class="next-item-text">
+        <h4>Payment System Integration</h4>
+        <p>Yoco or PayFast embedded into the landing page. Enables direct product sales and package purchases online — converts the site from a brochure to a revenue tool.</p>
+      </div>
+    </div>
+    <div class="next-item">
+      <span class="next-item-num">03</span>
+      <div class="next-item-text">
+        <h4>CIPC Incorporation</h4>
+        <p>Once name approved — Ref: 9459157689 — file incorporation (R175). B-BBEE certificate to follow post-registration when trading begins.</p>
+      </div>
+    </div>
+    <div class="next-item">
+      <span class="next-item-num">04</span>
+      <div class="next-item-text">
+        <h4>Formal Service Agreement</h4>
+        <p>A clean signed agreement covering all completed work, all payments received, and all upcoming scope. Protects both parties. Formalizes the long-haul relationship.</p>
+      </div>
+    </div>
+    <div class="next-item">
+      <span class="next-item-num">05</span>
+      <div class="next-item-text">
+        <h4>Monthly Retainer (Proposed)</h4>
+        <p>Ongoing campaign management, content, and operational support at an agreed monthly rate. Housing Hues becomes Johnz True Organics' permanent operational partner — not a one-time vendor.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>Prepared by Housing Hues · July 2026 · Confidential — for client use only</p>
+  <span class="agency">HOUSING HUES</span>
+</div>
+
+</body>
+</html>
